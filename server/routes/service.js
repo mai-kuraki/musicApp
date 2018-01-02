@@ -34,7 +34,7 @@ let rpUtil = {
 module.exports = {
     search: (req, res) => {
         let args = req.query;
-        rpUtil.get(`${requestHost}/search?keywords=${args.keywords}`, null, req, res, (body) => {
+        rpUtil.get(`${requestHost}/search?keywords=${encodeURIComponent(args.keywords)}`, null, req, res, (body) => {
             res.json(body);
         });
     }
