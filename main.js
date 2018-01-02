@@ -13,8 +13,8 @@ function createWindow() {
         minWidth: 500,
         minHeight: 500,
         frame: false,
-        titleBarStyle: 'hidden-inset',
-        transparent: false,
+        // titleBarStyle: 'hidden',
+        transparent: true,
     });
     //加载index.html
     win.loadURL(url.format({

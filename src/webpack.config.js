@@ -6,7 +6,7 @@ var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var config = {
     entry: {
-        app: ['./js/app.js']
+        app: ['babel-polyfill','./js/app.js']
     },
     output: {
         path: path.resolve(__dirname, '../dist'),

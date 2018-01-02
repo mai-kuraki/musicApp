@@ -84,6 +84,10 @@ $theme: #E81123;
     }
 }
 
+#audio{
+    display: none;
+}
+
 #main {
     width: 100%;
     height: 100%;
@@ -346,15 +350,24 @@ $theme: #E81123;
                     .pre{
                         font-size: 30px;
                         color: #DF3B3B;
+                        &:active{
+                            color: #9A151A;
+                        }
                     }
                     .play{
                         font-size: 36px;
                         color: #DF3B3B;
                         margin: 0px 17px;
+                        &:active{
+                            color: #9A151A;
+                        }
                     }
                     .next{
                         font-size: 30px;
                         color: #DF3B3B;
+                        &:active{
+                            color: #9A151A;
+                        }
                     }
                 }
                 .progress-bar{
