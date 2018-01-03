@@ -62,11 +62,11 @@ input[placeholder] {
 }
 
 ::selection {
-  color: #FFF;
+  color: #858585;
 }
 
 ::-moz-selection {
-  color: #FFF;
+  color: #858585;
 }
 
 .track-vertical {
@@ -82,6 +82,10 @@ input[placeholder] {
 
 .thumb-vertical:hover {
   background: #adafb2;
+}
+
+#audio {
+  display: none;
 }
 
 #main {
@@ -393,15 +397,27 @@ input[placeholder] {
   color: #DF3B3B;
 }
 
+#main .main-wrap .window-content .music-bottom-bar .control .pre:active {
+  color: #9A151A;
+}
+
 #main .main-wrap .window-content .music-bottom-bar .control .play {
   font-size: 36px;
   color: #DF3B3B;
   margin: 0px 17px;
 }
 
+#main .main-wrap .window-content .music-bottom-bar .control .play:active {
+  color: #9A151A;
+}
+
 #main .main-wrap .window-content .music-bottom-bar .control .next {
   font-size: 30px;
   color: #DF3B3B;
+}
+
+#main .main-wrap .window-content .music-bottom-bar .control .next:active {
+  color: #9A151A;
 }
 
 #main .main-wrap .window-content .music-bottom-bar .progress-bar {
@@ -550,4 +566,212 @@ input[placeholder] {
   line-height: 14px;
   border-radius: 7px;
   font-size: 8px;
+}
+
+.search-page {
+  background: #FBFBFD;
+  height: 100%;
+}
+
+.search-page .scroll-box {
+  padding: 20px 30px;
+}
+
+.search-page .search-box {
+  width: 100%;
+  height: 48px;
+  position: relative;
+  border: solid 1px #E3E2E4;
+}
+
+.search-page .search-box input {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 10px 12px;
+  font-size: 16px;
+  padding-right: 48px;
+}
+
+.search-page .search-box input::-webkit-input-placeholder {
+  color: #E3E2E4;
+}
+
+.search-page .search-box .search-btn {
+  display: flex;
+  width: 48px;
+  height: 46px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: #E3E2E4;
+}
+
+.search-page .result-area {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.search-page .result-area .react-tabs {
+  width: 100%;
+}
+
+.search-page .result-area .react-tabs .react-tabs__tab-list {
+  width: 100%;
+  overflow: hidden;
+  border-bottom: solid 1px #e4e4e4;
+  cursor: default;
+}
+
+.search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab {
+  float: left;
+  height: 45px;
+  line-height: 48px;
+  margin-right: 23px;
+  font-size: 18px;
+}
+
+.search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab--selected {
+  color: #C53033;
+  position: relative;
+}
+
+.search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab--selected::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: #C53033;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+}
+
+.search-page .result-area .react-tabs__tab-panel {
+  margin-top: 16px;
+}
+
+.search-page .result-area .songs-item li {
+  width: 100%;
+  height: 48px;
+  overflow: hidden;
+  background: none;
+}
+
+.search-page .result-area .songs-item li:nth-child(odd) {
+  background: #F3F3F5;
+}
+
+.search-page .result-area .songs-item li .coum {
+  height: 48px;
+  line-height: 48px;
+  float: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: default;
+}
+
+.search-page .result-area .songs-item li .coum-1 {
+  width: 35%;
+  padding: 0px 16px;
+  display: flex;
+}
+
+.search-page .result-area .songs-item li .coum-1 .mv {
+  color: #B13232;
+  font-size: 20px;
+  margin-left: 5px;
+}
+
+.search-page .result-area .songs-item li .coum-2 {
+  width: 90px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-page .result-area .songs-item li .coum-2 .c-w {
+  display: none;
+}
+
+.search-page .result-area .songs-item li .coum-2 .play {
+  font-size: 27px;
+  color: #666;
+}
+
+.search-page .result-area .songs-item li .coum-2 .more {
+  font-size: 27px;
+  color: #666;
+}
+
+.search-page .result-area .songs-item li .coum-2 .download-flag {
+  font-size: 16px;
+  color: #8DD4F1;
+}
+
+.search-page .result-area .songs-item li .coum-3 {
+  width: 20%;
+  padding: 0px 12px;
+  font-size: 12px;
+}
+
+.search-page .result-area .songs-item li .coum-4 {
+  width: 23%;
+  padding: 0px 15px;
+  color: #999;
+  font-size: 12px;
+}
+
+.search-page .result-area .songs-item li .coum-5 {
+  width: 70px;
+  padding: 0px 12px;
+  color: #999;
+  font-size: 12px;
+}
+
+.search-page .result-area .songs-item li .coum-6 {
+  width: 45px;
+  padding-right: 6px;
+  text-align: right;
+  color: #FC6E40;
+}
+
+.search-page .result-area .songs-item li .coum-6 span {
+  font-size: 20px;
+}
+
+.search-page .result-area .songs-item .select {
+  background: #E9E9EB;
+}
+
+.search-page .result-area .songs-item .select .coum-2 {
+  width: 90px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-page .result-area .songs-item .select .coum-2 .c-w {
+  display: block;
+}
+
+.search-page .result-area .songs-item .select .coum-2 .play {
+  font-size: 27px;
+  color: #666;
+}
+
+.search-page .result-area .songs-item .select .coum-2 .more {
+  font-size: 27px;
+  color: #666;
+}
+
+.search-page .result-area .songs-item .select .coum-2 .download-flag {
+  font-size: 16px;
+  color: #8DD4F1;
+  display: none;
 }

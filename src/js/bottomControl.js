@@ -1,5 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
+import * as constStr from './const';
+import eventEmitter from './eventEmitter';
 
 export default class BottomControl extends React.Component {
     constructor() {
@@ -12,6 +15,10 @@ export default class BottomControl extends React.Component {
             audioCurDuration: 0,
             volume: 1,
             loopType: 1,
+            songInfo: {},
+            urlInfo: {},
+            songDetail: {},
+            privileges: {},
         }
     }
 
@@ -27,6 +34,14 @@ export default class BottomControl extends React.Component {
         window.onresize = (e) => {
         this.updatePlayThumb();
         }
+
+        eventEmitter.on(constStr.INITAUDIO, (songInfo, urlInfo) => {
+          this.initAudio(songInfo, urlInfo);
+        });
+    }
+
+    componentWillUnmount() {
+      eventEmitter.removeListener(constStr.INITAUDIO);
     }
 
     formatSeconds(value) {
@@ -62,6 +77,23 @@ export default class BottomControl extends React.Component {
         return result;
     }
 
+    initAudio(songInfo, urlInfo) {
+      console.log(songInfo)
+      console.log(urlInfo)
+      let audio = document.getElementById('audio');
+      audio.play();
+      this.setState({
+        playState: true,
+        songInfo: songInfo,
+        urlInfo: urlInfo,
+      });
+      this.durationchange();
+      setTimeout(() => {
+        this.getSongDetail();
+        this.timeupdate();
+      });
+    }
+
     handlePlay() {
         let audio = document.getElementById('audio');
         if(this.state.playState) {
@@ -71,13 +103,13 @@ export default class BottomControl extends React.Component {
         }
         this.setState({
           playState: !this.state.playState,
-        })
+        });
       }
 
       handleThumbDown(e) {
         this.setState({
           playThumbActive: true,
-        })
+        });
       }
     
       mouseMove(e) {
@@ -113,7 +145,22 @@ export default class BottomControl extends React.Component {
         }
       }
     
-      
+      getSongDetail() {
+        let songInfo = this.state.songInfo;
+        if(!songInfo.id)return;
+        (async () => {
+          let req = await axios.get(`${__REQUESTHOST}/api/song/detail?ids=${songInfo.id}`);
+          if(req.status == 200) {
+              let data = req.data;
+              if(data.code == 200) {
+                  this.setState({
+                    songDetail: data.songs.length > 0?data.songs[0]:{},
+                    privileges: data.privileges,
+                  })
+              }
+          }
+        })();
+      }
     
       durationchange() {
         let audio = document.getElementById('audio');
@@ -148,11 +195,17 @@ export default class BottomControl extends React.Component {
       }
 
     render() {
+        let songInfo = this.state.songInfo;
+        let songDetail = this.state.songDetail;
+        let cover;
+        if(songDetail.hasOwnProperty('al')) {
+          cover = songDetail.al.picUrl;
+        }
         return (
             <div className="music-bottom-bar">
             <div className="cover">
               <div className="full-screen"><span className="iconfont icon-wangyequanping"></span></div>
-              <img src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1446912299,3514293506&fm=27&gp=0.jpg"/>
+              <img src={cover || "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1446912299,3514293506&fm=27&gp=0.jpg"}/>
             </div>
             <div className="control">
               <div className="pre iconfont icon-xiayishou-copy"></div>
@@ -161,7 +214,10 @@ export default class BottomControl extends React.Component {
             </div>
             <div className="progress-bar">
               <div className="bar-info">
-                <div className="audio-name">永远的第一天（Live）- live <span>王力宏</span></div>
+                <div className="audio-name">
+                {
+                  songInfo.name
+                } <span>{songInfo.hasOwnProperty('artists')?songInfo.artists[0].name:''}</span></div>
                 <div className="dur-info"><span>{this.formatSeconds(this.state.audioCurDuration)}</span> / {this.formatSeconds(this.state.audioDuration)}</div>
               </div>
               <div className="bar-track" id="barTrack">

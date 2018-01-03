@@ -16,7 +16,7 @@ class App extends React.Component {
       windowSize: 'normal',
       routers: [
         {
-          path: '/search',
+          path: '/',
           component: Search,
         }
       ]

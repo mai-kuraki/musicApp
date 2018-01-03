@@ -37,5 +37,17 @@ module.exports = {
         rpUtil.get(`${requestHost}/search?keywords=${encodeURIComponent(args.keywords)}`, null, req, res, (body) => {
             res.json(body);
         });
+    },
+    musicUrl: (req, res) => {
+        let args = req.query;
+        rpUtil.get(`${requestHost}/music/url?id=${args.id}`, null, req, res, (body) => {
+            res.json(body);
+        });
+    },
+    songDetail: (req, res) => {
+        let args = req.query;
+        rpUtil.get(`${requestHost}/song/detail?ids=${args.ids}`, null, req, res, (body) => {
+            res.json(body);
+        });
     }
 };
