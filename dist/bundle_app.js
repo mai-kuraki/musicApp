@@ -35037,8 +35037,6 @@ var BottomControl = function (_React$Component) {
     value: function initAudio(songInfo, urlInfo) {
       var _this3 = this;
 
-      console.log(songInfo);
-      console.log(urlInfo);
       var audio = document.getElementById('audio');
       audio.play();
       this.setState({
@@ -35329,6 +35327,10 @@ var _reactCustomScrollbars = __webpack_require__(413);
 
 var _reactTabs = __webpack_require__(456);
 
+var _loading = __webpack_require__(466);
+
+var _loading2 = _interopRequireDefault(_loading);
+
 var _const = __webpack_require__(464);
 
 var constStr = _interopRequireWildcard(_const);
@@ -35364,7 +35366,8 @@ var Search = function (_React$Component) {
             songs: [],
             songCount: 0,
             resultShow: false,
-            curSong: {}
+            curSong: {},
+            hasSearch: false
         };
         return _this;
     }
@@ -35393,6 +35396,7 @@ var Search = function (_React$Component) {
 
                                     if (data.code == 200) {
                                         _this2.setState({
+                                            hasSearch: true,
                                             songCount: data.result.songCount,
                                             songs: data.result.songs || []
                                         });
@@ -35540,7 +35544,8 @@ var Search = function (_React$Component) {
                         }),
                         _react2.default.createElement('span', { className: 'iconfont search-btn icon-sousuo1', onClick: this.search.bind(this) })
                     ),
-                    _react2.default.createElement(
+                    _react2.default.createElement(_loading2.default, null),
+                    this.state.hasSearch ? _react2.default.createElement(
                         'div',
                         { className: 'result-area' },
                         _react2.default.createElement(
@@ -35647,7 +35652,7 @@ var Search = function (_React$Component) {
                             _react2.default.createElement(_reactTabs.TabPanel, null),
                             _react2.default.createElement(_reactTabs.TabPanel, null)
                         )
-                    )
+                    ) : null
                 )
             );
         }
@@ -48149,6 +48154,64 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var myEmitter = new _events2.default();
 exports.default = myEmitter;
+
+/***/ }),
+/* 466 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(9);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(76);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Loading = function (_React$Component) {
+    _inherits(Loading, _React$Component);
+
+    function Loading() {
+        _classCallCheck(this, Loading);
+
+        return _possibleConstructorReturn(this, (Loading.__proto__ || Object.getPrototypeOf(Loading)).call(this));
+    }
+
+    _createClass(Loading, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: 'skype-loader' },
+                _react2.default.createElement('div', { className: 'dot' }),
+                _react2.default.createElement('div', { className: 'dot' }),
+                _react2.default.createElement('div', { className: 'dot' }),
+                _react2.default.createElement('div', { className: 'dot' }),
+                _react2.default.createElement('div', { className: 'dot' })
+            );
+        }
+    }]);
+
+    return Loading;
+}(_react2.default.Component);
+
+exports.default = Loading;
 
 /***/ })
 /******/ ]);

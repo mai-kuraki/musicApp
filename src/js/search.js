@@ -4,6 +4,7 @@ import axios from 'axios';
 import $ from 'jquery';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Loading from './loading';
 import * as constStr from './const';
 import eventEmitter from './eventEmitter';
 
@@ -16,6 +17,7 @@ export default class Search extends React.Component {
             songCount: 0,
             resultShow: false,
             curSong: {},
+            hasSearch: false,
         }
     }
 
@@ -28,6 +30,7 @@ export default class Search extends React.Component {
                 let data = req.data;
                 if(data.code == 200) {
                     this.setState({
+                        hasSearch: true,
                         songCount: data.result.songCount,
                         songs: data.result.songs || [], 
                     })
@@ -125,7 +128,10 @@ export default class Search extends React.Component {
                     />
                     <span className="iconfont search-btn icon-sousuo1" onClick={this.search.bind(this)}></span>
                 </div>
-                <div className="result-area">
+                <Loading/>
+                {
+                    this.state.hasSearch?
+                    <div className="result-area">
                     <Tabs>
                     <TabList>
                         <Tab>单曲</Tab>
@@ -189,7 +195,8 @@ export default class Search extends React.Component {
                     <TabPanel></TabPanel>
                     <TabPanel></TabPanel>
                 </Tabs>
-                </div>
+                </div>:null
+                }
                 </Scrollbars>
             </div>
         )

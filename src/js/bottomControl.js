@@ -78,8 +78,6 @@ export default class BottomControl extends React.Component {
     }
 
     initAudio(songInfo, urlInfo) {
-      console.log(songInfo)
-      console.log(urlInfo)
       let audio = document.getElementById('audio');
       audio.play();
       this.setState({
