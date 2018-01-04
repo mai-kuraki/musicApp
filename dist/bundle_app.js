@@ -35367,18 +35367,49 @@ var Search = function (_React$Component) {
             songCount: 0,
             resultShow: false,
             curSong: {},
-            hasSearch: false
+            hasSearch: false,
+            loading: false,
+            moreMenu: false
         };
         return _this;
     }
 
     _createClass(Search, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            (0, _jquery2.default)(document).on('click', '.window-content', function (e) {
+                var className = (0, _jquery2.default)(e.target).attr('class') || '';
+                if (!(className.indexOf('more-menu') > -1 || (0, _jquery2.default)(e.target).parents('.more-menu').length > 0 || className.indexOf('iconmore') > -1)) {
+                    _this2.setState({
+                        moreMenu: false
+                    });
+                }
+            });
+        }
+    }, {
+        key: 'loading',
+        value: function loading() {
+            this.setState({
+                loading: true
+            });
+        }
+    }, {
+        key: 'loadingEnd',
+        value: function loadingEnd() {
+            this.setState({
+                loading: false
+            });
+        }
+    }, {
         key: 'search',
         value: function search() {
-            var _this2 = this;
+            var _this3 = this;
 
             var keyword = this.state.keyword;
             if (!keyword) return;
+            this.loading();
             _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                 var req, data;
                 return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -35391,11 +35422,12 @@ var Search = function (_React$Component) {
                             case 2:
                                 req = _context.sent;
 
+                                _this3.loadingEnd();
                                 if (req.status == 200) {
                                     data = req.data;
 
                                     if (data.code == 200) {
-                                        _this2.setState({
+                                        _this3.setState({
                                             hasSearch: true,
                                             songCount: data.result.songCount,
                                             songs: data.result.songs || []
@@ -35403,12 +35435,12 @@ var Search = function (_React$Component) {
                                     }
                                 }
 
-                            case 4:
+                            case 5:
                             case 'end':
                                 return _context.stop();
                         }
                     }
-                }, _callee, _this2);
+                }, _callee, _this3);
             }))();
         }
     }, {
@@ -35461,20 +35493,21 @@ var Search = function (_React$Component) {
         }
     }, {
         key: 'songSelect',
-        value: function songSelect(e) {
+        value: function songSelect(songData, e) {
+            this.setState({
+                curSong: songData
+            });
             var el = e.target;
             (0, _jquery2.default)(el).parents('li').siblings().removeClass('select');
             (0, _jquery2.default)(el).parents('li').addClass('select');
         }
     }, {
         key: 'playSong',
-        value: function playSong(songData) {
-            var _this3 = this;
+        value: function playSong() {
+            var _this4 = this;
 
+            var songData = this.state.curSong;
             if (!songData.id) return;
-            this.setState({
-                curSong: songData
-            });
             _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
                 var req, data, sourceUrl;
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -35505,15 +35538,35 @@ var Search = function (_React$Component) {
                                 return _context2.stop();
                         }
                     }
-                }, _callee2, _this3);
+                }, _callee2, _this4);
             }))();
+        }
+    }, {
+        key: 'moreMenu',
+        value: function moreMenu(e) {
+            this.setState({
+                moreMenu: true
+            });
+            var y = e.clientY,
+                wY = (0, _jquery2.default)(window).height();
+            var tag = (0, _jquery2.default)(e.target);
+            setTimeout(function () {
+                var top = 0;
+                if (y > wY - (0, _jquery2.default)('.more-menu').height() - 60) {
+                    top = tag.parents('li').offset().top + 24 - (0, _jquery2.default)('.songs-item').offset().top - (0, _jquery2.default)('.more-menu').height();
+                } else {
+                    top = tag.parents('li').offset().top + 24 - (0, _jquery2.default)('.songs-item').offset().top;
+                }
+                (0, _jquery2.default)('.more-menu').css('top', top + 'px');
+            });
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this4 = this;
+            var _this5 = this;
 
             var songs = this.state.songs;
+            var curSong = this.state.curSong;
             return _react2.default.createElement(
                 'div',
                 { className: 'search-page' },
@@ -35544,7 +35597,11 @@ var Search = function (_React$Component) {
                         }),
                         _react2.default.createElement('span', { className: 'iconfont search-btn icon-sousuo1', onClick: this.search.bind(this) })
                     ),
-                    _react2.default.createElement(_loading2.default, null),
+                    this.state.loading ? _react2.default.createElement(
+                        'div',
+                        { className: 'search-loading' },
+                        _react2.default.createElement(_loading2.default, null)
+                    ) : null,
                     this.state.hasSearch ? _react2.default.createElement(
                         'div',
                         { className: 'result-area' },
@@ -35599,7 +35656,7 @@ var Search = function (_React$Component) {
                                     songs.map(function (data, k) {
                                         return _react2.default.createElement(
                                             'li',
-                                            { key: k, onClick: _this4.songSelect.bind(_this4) },
+                                            { className: 'clearfix', key: k, onClick: _this5.songSelect.bind(_this5, data) },
                                             _react2.default.createElement(
                                                 'div',
                                                 { className: 'coum coum-1' },
@@ -35616,8 +35673,8 @@ var Search = function (_React$Component) {
                                                 _react2.default.createElement(
                                                     'div',
                                                     { className: 'c-w' },
-                                                    _react2.default.createElement('span', { className: 'play iconfont icon-bofang1', onClick: _this4.playSong.bind(_this4, data) }),
-                                                    _react2.default.createElement('span', { className: 'more iconfont icon-caidan' }),
+                                                    _react2.default.createElement('span', { className: 'play iconfont icon-bofang1', onClick: _this5.playSong.bind(_this5) }),
+                                                    _react2.default.createElement('span', { className: 'more iconmore iconfont icon-caidan', onClick: _this5.moreMenu.bind(_this5) }),
                                                     _react2.default.createElement('span', { className: 'download-flag iconfont icon-gou' })
                                                 )
                                             ),
@@ -35634,7 +35691,7 @@ var Search = function (_React$Component) {
                                             _react2.default.createElement(
                                                 'div',
                                                 { className: 'coum coum-5' },
-                                                _this4.formatSeconds(data.duration / 1000)
+                                                _this5.formatSeconds(data.duration / 1000)
                                             ),
                                             _react2.default.createElement(
                                                 'div',
@@ -35642,7 +35699,72 @@ var Search = function (_React$Component) {
                                                  false ? _react2.default.createElement('span', { className: 'sq iconfont icon-ttpodicon' }) : null
                                             )
                                         );
-                                    })
+                                    }),
+                                    this.state.moreMenu ? _react2.default.createElement(
+                                        'div',
+                                        { className: 'more-menu' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'item' },
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u4E0B\u4E00\u9996\u64AD\u653E'
+                                            )
+                                        ),
+                                        _react2.default.createElement('span', { className: 'line' }),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'item' },
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u6536\u85CF'
+                                            ),
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u4E0B\u8F7D'
+                                            ),
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u8BC4\u8BBA'
+                                            ),
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u5206\u4EAB'
+                                            )
+                                        ),
+                                        _react2.default.createElement('span', { className: 'line' }),
+                                        _react2.default.createElement(
+                                            'div',
+                                            { className: 'item' },
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u6B4C\u624B\uFF1A',
+                                                curSong.artists[0].name
+                                            ),
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u4E13\u8F91\uFF1A',
+                                                curSong.album.name
+                                            ),
+                                            curSong.mvid ? _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u67E5\u770BMV'
+                                            ) : null,
+                                            _react2.default.createElement(
+                                                'button',
+                                                null,
+                                                '\u6253\u5F00\u6587\u4EF6\u6240\u5728\u76EE\u5F55'
+                                            )
+                                        )
+                                    ) : null
                                 )
                             ),
                             _react2.default.createElement(_reactTabs.TabPanel, null),

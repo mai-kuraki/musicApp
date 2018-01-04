@@ -71,6 +71,18 @@ input[placeholder]{
     color: #FFF;
 }
 
+.clearfix {
+    zoom: 1;
+    &:after {
+        content: "";
+        display: block;
+        height: 0;
+        font-size: 0;
+        clear: both;
+        visibility: hidden;
+    }
+}
+
 
 $theme: #E81123;
 .track-vertical{
@@ -562,8 +574,19 @@ to { transform: rotate(360deg); }
 .search-page{
     background: #FBFBFD;
     height: 100%;
+    position: relative;
     .scroll-box{
         padding: 20px 30px;
+    }
+    .search-loading{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .search-box{
         width: 100%;
@@ -634,11 +657,43 @@ to { transform: rotate(360deg); }
             margin-top: 16px;
         }
         .songs-item{
+            position: relative;
+            .more-menu{
+                width: 275px;
+                border: solid 1px #E9E9EB;
+                position: absolute;
+                left: calc(35% + 40px);
+                top: 30px;
+                background: #FFF;
+                z-index: 9;
+                .item{
+                    padding: 8px 0px;
+                }
+                button{
+                    cursor: default;
+                    width: 100%;
+                    height: 30px;
+                    line-height: 30px;
+                    background: #FFF;
+                    text-align: left;
+                    color: #666;
+                    border: none;
+                    outline: none;
+                    padding-left: 12px;
+                    font-size: 13px;
+                }
+                .line{
+                    display: block;
+                    width: 100%;
+                    height: 1px;
+                    background: #E9E9EB;
+                }
+            }
             li{
                 width: 100%;
                 height: 48px;
-                overflow: hidden;
                 background: none;
+                overflow: hidden;
                 &:nth-child(odd) {
                     background: #F3F3F5;
                 }
@@ -665,6 +720,8 @@ to { transform: rotate(360deg); }
                     width: 90px;
                     display: flex;
                     justify-content: space-between;
+                    position: relative;
+                    overflow: hidden;
                     .c-w{
                         display: none;
                     }

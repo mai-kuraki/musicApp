@@ -71,6 +71,19 @@ input[placeholder] {
   color: #FFF;
 }
 
+.clearfix {
+  zoom: 1;
+}
+
+.clearfix:after {
+  content: "";
+  display: block;
+  height: 0;
+  font-size: 0;
+  clear: both;
+  visibility: hidden;
+}
+
 .track-vertical {
   right: 0px;
   width: 7px !important;
@@ -628,10 +641,22 @@ input[placeholder] {
 .search-page {
   background: #FBFBFD;
   height: 100%;
+  position: relative;
 }
 
 .search-page .scroll-box {
   padding: 20px 30px;
+}
+
+.search-page .search-loading {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-page .search-box {
@@ -714,11 +739,50 @@ input[placeholder] {
   margin-top: 16px;
 }
 
+.search-page .result-area .songs-item {
+  position: relative;
+}
+
+.search-page .result-area .songs-item .more-menu {
+  width: 275px;
+  border: solid 1px #E9E9EB;
+  position: absolute;
+  left: calc(35% + 40px);
+  top: 30px;
+  background: #FFF;
+  z-index: 9;
+}
+
+.search-page .result-area .songs-item .more-menu .item {
+  padding: 8px 0px;
+}
+
+.search-page .result-area .songs-item .more-menu button {
+  cursor: default;
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  background: #FFF;
+  text-align: left;
+  color: #666;
+  border: none;
+  outline: none;
+  padding-left: 12px;
+  font-size: 13px;
+}
+
+.search-page .result-area .songs-item .more-menu .line {
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: #E9E9EB;
+}
+
 .search-page .result-area .songs-item li {
   width: 100%;
   height: 48px;
-  overflow: hidden;
   background: none;
+  overflow: hidden;
 }
 
 .search-page .result-area .songs-item li:nth-child(odd) {
@@ -751,6 +815,8 @@ input[placeholder] {
   width: 90px;
   display: flex;
   justify-content: space-between;
+  position: relative;
+  overflow: hidden;
 }
 
 .search-page .result-area .songs-item li .coum-2 .c-w {
