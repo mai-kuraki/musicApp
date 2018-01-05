@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
-import * as constStr from './const';
-import eventEmitter from './eventEmitter';
+import * as constStr from '../lib/const';
+import eventEmitter from '../lib/eventEmitter';
 
 export default class BottomControl extends React.Component {
     constructor() {
@@ -13,6 +13,7 @@ export default class BottomControl extends React.Component {
             playState: false,
             audioDuration: 0,
             audioCurDuration: 0,
+            audioBuffered: 0,
             volume: 1,
             loopType: 1,
             songInfo: {},
@@ -25,12 +26,27 @@ export default class BottomControl extends React.Component {
     componentDidMount() {
         let audio = document.getElementById('audio');
         audio.addEventListener('durationchange', () => {
-        this.durationchange();
+          this.durationchange();
         });
         audio.addEventListener('timeupdate', () => {
-        this.timeupdate();
+          this.timeupdate();
         });
-        
+        audio.addEventListener('ended', () => {
+          this.handlePlay();
+          this.handleNext();
+        });
+        audio.addEventListener('progress', () => {
+          if(audio.buffered.length > 0) {
+            this.setState({
+              audioBuffered: audio.buffered.end(0),
+            });
+            setTimeout(() => {
+              this.updateBuffered();
+            })
+          }
+          
+        });
+
         window.onresize = (e) => {
         this.updatePlayThumb();
         }
@@ -38,6 +54,15 @@ export default class BottomControl extends React.Component {
         eventEmitter.on(constStr.INITAUDIO, (songInfo, urlInfo) => {
           this.initAudio(songInfo, urlInfo);
         });
+    }
+
+    updateBuffered() {
+      let audioDuration = this.state.audioDuration;
+      let audioBuffered = this.state.audioBuffered;
+      let percent = audioBuffered / audioDuration;
+      let allWidth = document.getElementById('barTrack').clientWidth;
+      let width = allWidth * percent;
+      document.getElementById('buffered').style.width = `${width}px`;
     }
 
     componentWillUnmount() {
@@ -84,6 +109,7 @@ export default class BottomControl extends React.Component {
         playState: true,
         songInfo: songInfo,
         urlInfo: urlInfo,
+        audioBuffered: 0,
       });
       this.durationchange();
       setTimeout(() => {
@@ -139,8 +165,24 @@ export default class BottomControl extends React.Component {
             audio.currentTime = this.state.audioCurDuration;
             this.updatePlayThumb();
           })
-          
         }
+      }
+
+      trackClick(e) {
+          let trackOffsetX = document.getElementById('barTrack').offsetLeft;
+          let allWidth = document.getElementById('barTrack').clientWidth;
+          let newLeft = e.clientX - trackOffsetX;
+          let playPercent = parseFloat(newLeft) / parseFloat(allWidth);
+          let audioDuration = this.state.audioDuration;
+          let audioCurDuration = audioDuration * playPercent;
+          this.setState({
+            playPercent: playPercent,
+            audioCurDuration: audioCurDuration,
+          });
+          setTimeout(() => {
+            audio.currentTime = this.state.audioCurDuration;
+            this.updatePlayThumb();
+          });
       }
     
       getSongDetail() {
@@ -192,6 +234,14 @@ export default class BottomControl extends React.Component {
         document.getElementById('thumbTrack').style.width = `${left}px`;
       }
 
+      handleNext() {
+        eventEmitter.emit(constStr.PLAYNEXT);
+      }
+
+      handlePrev() {
+        eventEmitter.emit(constStr.PLAYPREV);
+      }
+
     render() {
         let songInfo = this.state.songInfo;
         let songDetail = this.state.songDetail;
@@ -206,9 +256,9 @@ export default class BottomControl extends React.Component {
               <img src={cover || "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1446912299,3514293506&fm=27&gp=0.jpg"}/>
             </div>
             <div className="control">
-              <div className="pre iconfont icon-xiayishou-copy"></div>
+              <div className="pre iconfont icon-xiayishou-copy" onClick={this.handlePrev.bind(this)}></div>
               <div className={`play iconfont ${this.state.playState?'icon-zanting':'icon-bofang'}`} onClick={this.handlePlay.bind(this)}></div>
-              <div className="next iconfont icon-xiayishou"></div>
+              <div className="next iconfont icon-xiayishou" onClick={this.handleNext.bind(this)}></div>
             </div>
             <div className="progress-bar">
               <div className="bar-info">
@@ -224,7 +274,8 @@ export default class BottomControl extends React.Component {
                     onMouseDown={this.handleThumbDown.bind(this)}
                   ><i></i></div>
                   <div className="thumb-track" id="thumbTrack"></div>
-                  <div className="track"></div>
+                  <div className="buffered" id="buffered"></div>
+                  <div className="track" onClick={this.trackClick.bind(this)}></div>
                 </div>
             </div>
             <div className="other">

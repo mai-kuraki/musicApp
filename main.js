@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const url = require('url');
+const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+
 // 保持一个对于 window 对象的全局引用，如果你不这样做，
 // 当 JavaScript 对象被垃圾回收， window 会被自动地关闭
 let win;
@@ -30,6 +32,10 @@ function createWindow() {
     win.on('closed', () => {
         win = null;
     });
+
+    installExtension(REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 
 }
 

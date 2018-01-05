@@ -2,11 +2,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import $ from 'jquery';
+import store from '../store';
 import { Scrollbars } from 'react-custom-scrollbars';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Loading from './loading';
-import * as constStr from './const';
-import eventEmitter from './eventEmitter';
+import * as constStr from '../lib/const';
+import * as Actions from '../actions';
+import eventEmitter from '../lib/eventEmitter';
 
 export default class Search extends React.Component {
     constructor() {
@@ -20,10 +22,17 @@ export default class Search extends React.Component {
             hasSearch: false,
             loading: false,
             moreMenu: false,
+            limit: 30,
         }
     }
 
     componentDidMount() {
+        eventEmitter.on(constStr.PLAYNEXT,  () => {
+            this.nextSong();
+        });
+        eventEmitter.on(constStr.PLAYPREV,  () => {
+            this.prevSong();
+        });
         $(document).on('click', '.window-content', (e) => {
             let className = $(e.target).attr('class') || '';
             if(!(className.indexOf('more-menu') > -1 || $(e.target).parents('.more-menu').length > 0 || className.indexOf('iconmore') > -1)) {
@@ -32,6 +41,11 @@ export default class Search extends React.Component {
                 });
             }
         })
+    }
+
+    componentWillUnmount() {
+        eventEmitter.removeListener(constStr.PLAYNEXT);
+        eventEmitter.removeListener(constStr.PLAYPREV);
     }
 
     loading() {
@@ -56,14 +70,60 @@ export default class Search extends React.Component {
             if(req.status == 200) {
                 let data = req.data;
                 if(data.code == 200) {
+                    let songs = this.state.songs
+                    let newSongs = songs.concat(data.result.songs || [])
                     this.setState({
                         hasSearch: true,
                         songCount: data.result.songCount,
-                        songs: data.result.songs || [], 
-                    })
+                        songs: newSongs, 
+                    });
+                    store.dispatch(Actions.setSearchList(newSongs));
+                    console.log(store.getState());
                 }
             }
         })();
+    }
+
+    nextSong() {
+        let curSong = this.state.curSong;
+        let songs = this.state.songs;
+        let all = songs.length;
+        let curIndex;
+        songs.map((data, k) => {
+            if(data.id == curSong.id) {
+                curIndex = k;
+            }
+        });
+        if(curIndex < all - 1) {
+            this.setState({
+                curSong: songs[curIndex + 1],
+            });
+            store.dispatch(Actions.setCurSong(songs[curIndex + 1]));
+            setTimeout(() => {
+                this.playSong();
+            })
+        }
+    }
+
+    prevSong() {
+        let curSong = this.state.curSong;
+        let songs = this.state.songs;
+        let all = songs.length;
+        let curIndex;
+        songs.map((data, k) => {
+            if(data.id == curSong.id) {
+                curIndex = k;
+            }
+        });
+        if(curIndex > 0) {
+            this.setState({
+                curSong: songs[curIndex - 1],
+            });
+            store.dispatch(Actions.setCurSong(songs[curIndex - 1]))
+            setTimeout(() => {
+                this.playSong();
+            })
+        }
     }
 
     formatSeconds(value) {
@@ -115,6 +175,7 @@ export default class Search extends React.Component {
         this.setState({
             curSong: songData,
         });
+        store.dispatch(Actions.setCurSong(songData))
         let el = e.target;
         $(el).parents('li').siblings().removeClass('select');
         $(el).parents('li').addClass('select');

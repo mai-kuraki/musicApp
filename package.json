@@ -1,5 +1,8 @@
 {
     "name": "musicApp",
     "version": "0.1.0",
-    "main": "main.js"
+    "main": "main.js",
+    "dependencies": {
+        "electron-devtools-installer": "^2.2.3"
+    }
 }

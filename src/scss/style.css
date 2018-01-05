@@ -553,7 +553,7 @@ input[placeholder] {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9;
+  z-index: 10;
 }
 
 #main .main-wrap .window-content .music-bottom-bar .progress-bar .bar-track .thumb-dot i {
@@ -571,6 +571,19 @@ input[placeholder] {
   height: 2px;
   top: 7px;
   background: #D13C3A;
+  z-index: 7;
+  pointer-events: none;
+}
+
+#main .main-wrap .window-content .music-bottom-bar .progress-bar .bar-track .buffered {
+  position: absolute;
+  left: 0px;
+  width: 0%;
+  height: 2px;
+  top: 7px;
+  background: #ACADAF;
+  z-index: 5;
+  pointer-events: none;
 }
 
 #main .main-wrap .window-content .music-bottom-bar .progress-bar .bar-track .track {

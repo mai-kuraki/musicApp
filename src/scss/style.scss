@@ -483,7 +483,7 @@ to { transform: rotate(360deg); }
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            z-index: 9;
+                            z-index: 10;
                             i{
                                 width: 4px;
                                 height: 4px;
@@ -500,6 +500,18 @@ to { transform: rotate(360deg); }
                             height: 2px;
                             top: 7px;
                             background: #D13C3A;
+                            z-index: 7;
+                            pointer-events: none;
+                        }
+                        .buffered{
+                            position: absolute;
+                            left: 0px;
+                            width: 0%;
+                            height: 2px;
+                            top: 7px;
+                            background: #ACADAF;
+                            z-index: 5;
+                            pointer-events: none;
                         }
                         .track{
                             width: 100%;
