@@ -54,10 +54,6 @@ export default class LeftNav extends React.Component {
         <div className={`left-nav ${this.state.menuState?'':'shrink'}`}>
             <div className="top-btn"><span className="btn iconfont icon-44" onClick={this.leftNavHandle.bind(this)}></span></div>
             <div className="menu-list">
-            <Scrollbars
-              renderTrackVertical={props => <div {...props} className="track-vertical"/>}
-              renderThumbVertical={({ style, ...props }) => <div {...props} className="thumb-vertical"/>}
-            >
             <ul className="item item1">
                 {
                     item1.map((data, k) => {
@@ -86,7 +82,6 @@ export default class LeftNav extends React.Component {
                 <li><span className="icon iconfont icon-yinleliebiao"></span><i>1989</i></li>
                 <li><span className="icon iconfont icon-yinleliebiao"></span><i>avril</i></li>
               </ul>
-            </Scrollbars>
             </div>
             <div className="user-info"></div>
           </div>

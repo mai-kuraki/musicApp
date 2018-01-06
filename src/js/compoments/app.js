@@ -55,13 +55,14 @@ export default class App extends React.Component {
     return (
       <Router>
         <div className="wrap">
+        <div className="blur"></div>
           <div className="main-wrap"
           onMouseMove={(e) => {this.refs.BottomControl.mouseMove(e)}}
           onMouseUp={(e) => {this.refs.BottomControl.mouseUp(e)}}
         >
           <audio id="audio" src="./download/Sigrid-EverybodyKnows.mp3"/>
           <div className="window-head">
-            <div className="app-name">网易云音乐</div>
+            <div className="app-name">Groove Music</div>
             <div className="drag-bar"></div>
             <div className="window-option-button">
               <div className="small iconfont icon-zuixiaohua" onClick={this.minimize.bind(this)}></div>

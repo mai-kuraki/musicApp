@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import $ from 'jquery';
 import store from '../store';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import Loading from './loading';
 import * as constStr from '../lib/const';
@@ -66,6 +65,27 @@ export default class Search extends React.Component {
         this.loading();
         (async () => {
             let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`);
+            console.log('ddd')
+            this.loadingEnd();
+            if(req.status == 200) {
+                let data = req.data;
+                if(data.code == 200) {
+                    this.setState({
+                        hasSearch: true,
+                        songCount: data.result.songCount,
+                        songs: data.result.songs, 
+                    });
+                    store.dispatch(Actions.setSearchList(data.result.songs));
+                    console.log(store.getState());
+                }
+            }
+        })();
+    }
+
+    page() {
+        (async () => {
+            let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`);
+            console.log('ddd')
             this.loadingEnd();
             if(req.status == 200) {
                 let data = req.data;
@@ -221,11 +241,7 @@ export default class Search extends React.Component {
         let curSong = this.state.curSong;
         return(
             <div className="search-page">
-            <Scrollbars
-              renderView={props => <div {...props} className="scroll-box"/>}
-              renderTrackVertical={props => <div {...props} className="track-vertical"/>}
-              renderThumbVertical={({ style, ...props }) => <div {...props} className="thumb-vertical"/>}
-            >
+            <div className="scroll-box">
                 <div className="search-box">
                     <input type="text" id="searchbox" 
                     value={this.state.keyword} 
@@ -264,12 +280,12 @@ export default class Search extends React.Component {
                                         <div className="coum coum-1">
                                             <span>{data.name}</span>
                                             {
-                                                data.mvid?<i className="mv iconfont icon-mv1"></i>:null
+                                                data.mvid?<i className="mv iconfont icon-mv2"></i>:null
                                             }
                                         </div>
                                         <div className="coum coum-2">
                                             <div className="c-w">
-                                            <span className="play iconfont icon-bofang1" onClick={this.playSong.bind(this)}></span>
+                                            <span className="play iconfont icon-bofang2" onClick={this.playSong.bind(this)}></span>
                                             <span className="more iconmore iconfont icon-caidan" onClick={this.moreMenu.bind(this)}></span>
                                             <span className="download-flag iconfont icon-gou"></span>
                                             </div>
@@ -334,7 +350,7 @@ export default class Search extends React.Component {
                 </Tabs>
                 </div>:null
                 }
-                </Scrollbars>
+                </div>
             </div>
         )
     }

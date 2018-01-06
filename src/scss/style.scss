@@ -1,9 +1,12 @@
+@font-face {font-family: "amble";
+    src: url('../font/Amble-Regular.ttf');
+}
 * {
     padding: 0px;
     margin: 0px;
     list-style: none;
     box-sizing: border-box;
-    font-family: "Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
+    font-family: "amble","Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
     user-select: none;
 }
 
@@ -15,12 +18,11 @@ html {
 body {
     width: 100%;
     height: 100%;
-    font-family: "Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
+    font-family: "amble","Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
     font-size: 14px;
     color: #000;
     background: none;
     overflow-y: auto;
-    // opacity: 0.95;
 }
 
 a {
@@ -37,28 +39,28 @@ i, em {
 }
 
 input{
-    font-family: "Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
+    font-family: "amble","Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
 }
 
 input[type="button"], input[type="submit"], input[type="reset"] {
     -webkit-appearance: none;
 }
 input[placeholder]{
-    font-family: "Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
+    font-family: "amble","Microsoft YaHei","PingFangSC-Regular", STHeiti, Helvetica, Arial, sans-serif!important;
 }
 
 ::-webkit-scrollbar {
-    width: 5px;
+    width: 0px;
     height: 5px;
     background-color: #f0f0f0;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #9D9D9D;
+    background-color: #999;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #f0f0f0;
+    background-color: none;
 }
 
 ::selection {
@@ -84,10 +86,10 @@ input[placeholder]{
 }
 
 
-$theme: #E81123;
+$theme: #FF6355;
 .track-vertical{
     right: 0px;
-    width: 7px!important;
+    width: 0px!important;
     height: 100%;
 }
 .thumb-vertical{
@@ -116,12 +118,12 @@ position: relative;
     &:after{
         content: "";
         position: absolute;
-        width: 5px;
-        height: 5px;
+        width: 4px;
+        height: 4px;
         background: $theme;
         border-radius: 50%;
         left: 50%;
-        margin-left: -2.5px;
+        margin-left: -2px;
     }
     &:nth-child(1) {
     animation-delay: 0.2s;
@@ -150,25 +152,37 @@ to { transform: rotate(360deg); }
 #main {
     width: 100%;
     height: 100%;
-    background: #FAFAFA;
+    background: none;
+    box-shadow: 2px 5px 18px rgba(0,0,0,.5), -2px -2px 5px rgba(76,76,76,.1);
     .wrap{
         width: 100%;
         height: 100%;
+        position: relative;        
+        overflow: hidden;
+    }
+    .blur{
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,.92);
     }
     .main-wrap{
         width: 100%;
         height: 100%;
         display: flex;
         flex-direction: column;
+        background: none;
+        position: absolute;
+        left: 0px;
+        top: 0px;
         .window-head{
             width: 100%;
-            height: 32px;
-            background: #BC2F2E;
+            height: 42px;
             display: flex;
             align-items: center;
-            color: #FFF;
             font-size: 12px;
             .app-name{
+                width: 192px;
                 display: flex;
                 align-items: center;
                 padding-left: 12px;
@@ -179,10 +193,12 @@ to { transform: rotate(360deg); }
                 flex: 1;
                 height: 100%;
                 -webkit-app-region: drag;
+                background: #FFF;
             }
             .window-option-button{
                 display: flex;
                 height: 100%;
+                background: #FFF;
                 div{
                     display: flex;
                     font-size: 13px;
@@ -191,11 +207,18 @@ to { transform: rotate(360deg); }
                     align-items: center;
                     justify-content: center;
                     transition: all 250ms ease;
+                    color: #999;
                     &:hover{
-                        background: $theme;
+                        background: #F0F0F0;
                     }
                     &:active{
-                        background: #F1707A;
+                        background: #FBFBFB;
+                    }
+                    &:last-child{
+                        &:hover{
+                            background: #F95749;
+                            color: #FFF;
+                        }
                     }
                 }
             }
@@ -212,8 +235,7 @@ to { transform: rotate(360deg); }
                 width: 192px;
                 height: 100%;
                 overflow: hidden;
-                border-right: solid 1px #DDDDE1;
-                background: #F3F3F5;
+                background: none;
                 .top-btn,.open-btn{
                     widows: 100%;
                     height: 45px;
@@ -255,7 +277,7 @@ to { transform: rotate(360deg); }
                                 }
                             }
                             &:hover{
-                                background: rgb(232,232,235);
+                                background: rgba(221,221,225, .4);
                             }
                             .icon{
                                 display: block;
@@ -276,14 +298,14 @@ to { transform: rotate(360deg); }
                             }
                         }
                         .active{
-                            background: #DDDDE1;
+                            background: rgba(221,221,225, .8);
                             position: relative;
                             &::before{
                                 content: '';
                                 display: block;
                                 width: 2px;
                                 height: 100%;
-                                background: #BC2F2D;
+                                background: #F85648;
                             }
                         }
                     }
@@ -319,7 +341,6 @@ to { transform: rotate(360deg); }
                 .user-info{
                     width: 100%;
                     height: 60px;
-                    border-top: solid 1px #DDDDE1;
                 }
             }
             .shrink{
@@ -358,13 +379,13 @@ to { transform: rotate(360deg); }
             .music-bottom-bar{
                 width: 100%;
                 height: 62px;
-                border-top: solid 1px #DDDDE1;
                 position: absolute;
                 left: 0px;
                 bottom: 0px;
-                background: #FFF;
+                background: rgba(252, 62, 45, 0.85);
                 display: flex;
-                padding: 1px;
+                box-shadow: 0px -3px 3px rgba(165,165,165, .1);
+                color: #FFF;
                 .cover{
                     width: 59px;
                     height: 100%;
@@ -403,30 +424,21 @@ to { transform: rotate(360deg); }
                     width: 190px;
                     height: 100%;
                     display: flex;
-                    line-height: 60px;
+                    line-height: 62px;
                     padding-left: 32px;
                     flex: none;
                     .pre{
-                        font-size: 30px;
-                        color: #DF3B3B;
-                        &:active{
-                            color: #9A151A;
-                        }
+                        font-size: 25px;
+                        color: #FFF;
                     }
                     .play{
-                        font-size: 36px;
-                        color: #DF3B3B;
+                        font-size: 30px;
+                        color: #FFF;
                         margin: 0px 17px;
-                        &:active{
-                            color: #9A151A;
-                        }
                     }
                     .next{
-                        font-size: 30px;
-                        color: #DF3B3B;
-                        &:active{
-                            color: #9A151A;
-                        }
+                        font-size: 25px;
+                        color: #FFF;
                     }
                 }
                 .progress-bar{
@@ -446,21 +458,21 @@ to { transform: rotate(360deg); }
                         flex-wrap: nowrap;
                         .audio-name{
                             font-size: 12px;
-                            color: #666;
+                            color: #FFF;
                             height: 16px;
                             overflow: hidden;
                             span{
-                                color: #999;
+                                color: #FFF;
                             }
                         }
                         .dur-info{
                             font-size: 9px;
-                            color: #999;
+                            color: #FFF;
                             height: 16px;
                             line-height: 16px;
                             overflow: hidden;
                             span{
-                                color: #666;
+                                color: #FFF;
                             }
                         }
                     }
@@ -475,7 +487,7 @@ to { transform: rotate(360deg); }
                             width: 16px;
                             height: 16px;
                             border-radius: 50%;
-                            border: solid 1px #E9E9EB;
+                            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
                             position: absolute;
                             left: 0px;
                             top: 0px;
@@ -488,7 +500,7 @@ to { transform: rotate(360deg); }
                                 width: 4px;
                                 height: 4px;
                                 display: block;
-                                background: #D13C3A;
+                                background: #F75547;
                                 border-radius: 50%;
 
                             }
@@ -499,7 +511,7 @@ to { transform: rotate(360deg); }
                             width: 0%;
                             height: 2px;
                             top: 7px;
-                            background: #D13C3A;
+                            background: #FFF;
                             z-index: 7;
                             pointer-events: none;
                         }
@@ -509,14 +521,14 @@ to { transform: rotate(360deg); }
                             width: 0%;
                             height: 2px;
                             top: 7px;
-                            background: #ACADAF;
+                            background: rgba(255,255,255,.5);
                             z-index: 5;
                             pointer-events: none;
                         }
                         .track{
                             width: 100%;
                             height: 2px;
-                            background: #E5E5E5;
+                            background: rgba(255,255,255,.3);
                         }
                     }
                 }
@@ -532,7 +544,7 @@ to { transform: rotate(360deg); }
                             display: flex;
                             justify-content: center;
                             font-size: 18px;
-                            color: #999;
+                            color: #FFF;
                             line-height: 58px;
                         }
                     }
@@ -542,17 +554,105 @@ to { transform: rotate(360deg); }
                             display: flex;
                             justify-content: center;
                             font-size: 18px;
-                            color: #999;
+                            color: #FFF;
                             line-height: 58px;
                         }
                     }
                     .volume{
+                        position: relative;
+                        .volume-control{
+                            width: 280px;
+                            height: 50px;
+                            background: #FFF;
+                            position: absolute;
+                            left: 50%;
+                            top: -55px;
+                            margin-left: -140px;
+                            box-shadow: 0px 0px 8px rgba(0,0,0,.3);
+                            padding: 0px 18px 0px 0px;
+                            display: flex;
+                            align-items: center;
+                            opacity: 0;
+                            visibility: hidden;
+                            transform: translateY(30px);
+                            transition: all 250ms ease;
+                            &:before{
+                                content: '';
+                                width: 0px;
+                                height: 0px;
+                                display: block;
+                                border: solid 10px transparent;
+                                border-top: solid 10px #FFF;
+                                position: absolute;
+                                left: 50%;
+                                bottom: -18px;
+                                margin-left: -10px;
+                            }
+                            .icon{
+                                width: 55px;
+                                height: 100%;
+                                align-items: center;
+                                justify-content: center;
+                                color: #333;
+                                display: flex;
+                            }
+                            .vol-track-wrap{
+                                flex: 1;
+                                height: 16px;
+                                align-items: center;
+                                position: relative;
+                                .vol-track{
+                                    width: 100%;
+                                    height: 2px;
+                                    background: #E5E5E5;
+                                    margin-top: 7px;
+                                }
+                                .vol-thumb{
+                                    position: absolute;
+                                    left: 0px;
+                                    width: 0%;
+                                    height: 2px;
+                                    top: 7px;
+                                    background: #F95749;
+                                    z-index: 7;
+                                    pointer-events: none;
+                                }
+                                .vol-dot{
+                                    width: 16px;
+                                    height: 16px;
+                                    border-radius: 50%;
+                                    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+                                    position: absolute;
+                                    left: 0px;
+                                    top: 0px;
+                                    background: #FFF;
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    z-index: 10;
+                                    margin-left: -8px;
+                                    i{
+                                        width: 4px;
+                                        height: 4px;
+                                        display: block;
+                                        background: #F75547;
+                                        border-radius: 50%;
+
+                                    }
+                                }
+                            }
+                        }
+                        .volume-control-active{
+                            visibility: visible;
+                            opacity: 1;
+                            transform: translateY(0px);
+                        }
                         .volume-icon{
                             width: 24px;
                             display: flex;
                             justify-content: center;
                             font-size: 19px;
-                            color: #999;
+                            color: #FFF;
                             line-height: 58px;
                         }
                     }
@@ -564,13 +664,13 @@ to { transform: rotate(360deg); }
                             display: flex;
                             justify-content: center;
                             font-size: 14px;
-                            color: #999;
+                            color: #FFF;
                         }
                         .num{
                             display: block;
                             padding: 0px 6px;
-                            background: #BBBCC1;
-                            color: #FFF;
+                            background: #FFF;
+                            color: #F75547;
                             height: 14px;
                             line-height: 14px;
                             border-radius: 7px;
@@ -584,11 +684,14 @@ to { transform: rotate(360deg); }
 }
 
 .search-page{
-    background: #FBFBFD;
+    background: #FFF;
+    width: 100%;
     height: 100%;
     position: relative;
     .scroll-box{
+        height: 100%;
         padding: 20px 30px;
+        overflow: hidden;
     }
     .search-loading{
         width: 100%;
@@ -604,7 +707,7 @@ to { transform: rotate(360deg); }
         width: 100%;
         height: 48px;
         position: relative;
-        border: solid 1px #E3E2E4;
+        box-shadow: 1px 1px 8px rgba(0,0,0,.12), -1px 1px 8px rgba(0,0,0,.12);
         input{
             display: flex;
             align-items: center;
@@ -634,11 +737,14 @@ to { transform: rotate(360deg); }
     }
     .result-area{
         width: 100%;
+        height: calc(100% - 45px);
         margin-top: 14px;
         .react-tabs{
             width: 100%;
+            height: 100%;
             .react-tabs__tab-list{
                 width: 100%;
+                height: 46px;
                 overflow: hidden;
                 border-bottom: solid 1px #e4e4e4;
                 cursor: default;
@@ -650,14 +756,14 @@ to { transform: rotate(360deg); }
                     font-size: 18px;
                 }
                 .react-tabs__tab--selected{
-                    color: #C53033;
+                    color: #F95949;
                     position: relative;
                     &::before{
                         content: '';
                         display: block;
                         width: 100%;
                         height: 2px;
-                        background: #C53033;
+                        background: #F95949;
                         position: absolute;
                         left: 0px;
                         bottom: 0px;
@@ -666,10 +772,14 @@ to { transform: rotate(360deg); }
             }
         }
         .react-tabs__tab-panel {
+            height: calc(100% - 46px);
             margin-top: 16px;
         }
         .songs-item{
             position: relative;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto; 
             .more-menu{
                 width: 275px;
                 border: solid 1px #E9E9EB;
@@ -706,9 +816,6 @@ to { transform: rotate(360deg); }
                 height: 48px;
                 background: none;
                 overflow: hidden;
-                &:nth-child(odd) {
-                    background: #F3F3F5;
-                }
                 .coum{
                     height: 48px;
                     line-height: 48px;
@@ -723,8 +830,8 @@ to { transform: rotate(360deg); }
                     padding: 0px 16px;
                     display: flex;
                     .mv{
-                        color: #B13232;
-                        font-size: 20px;
+                        color: #F95749;
+                        font-size: 24px;
                         margin-left: 5px;
                     }
                 }
@@ -778,7 +885,7 @@ to { transform: rotate(360deg); }
                 }
             }
             .select{
-                background: #E9E9EB;
+                background: #F3F3F5;
                 .coum-2{
                     width: 90px;
                     display: flex;

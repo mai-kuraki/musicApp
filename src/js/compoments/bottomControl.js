@@ -9,6 +9,9 @@ export default class BottomControl extends React.Component {
         super();
         this.state = {
             playThumbActive: false,
+            volThumbActive: false,
+            volumeSet: false,
+            mute: false,
             playPercent: 0,
             playState: false,
             audioDuration: 0,
@@ -48,12 +51,37 @@ export default class BottomControl extends React.Component {
         });
 
         window.onresize = (e) => {
-        this.updatePlayThumb();
+          this.updatePlayThumb();
+          this.updateBuffered();
         }
 
         eventEmitter.on(constStr.INITAUDIO, (songInfo, urlInfo) => {
           this.initAudio(songInfo, urlInfo);
         });
+        let volume = audio.volume;
+        this.setState({
+          volume: volume,
+        });
+        setTimeout(() => {
+          this.updateVolume();
+        });
+        
+    }
+
+    updateVolume() {
+      let audio = document.getElementById('audio');
+      let volume = this.state.volume;
+      audio.volume = volume;
+      let volDot = document.getElementById("volDot");
+      let volThumb = document.getElementById("volThumb");
+      volDot.style.left = (volume * 100) + '%';
+      volThumb.style.width = (volume * 100) + '%';
+      if(this.state.mute) {
+        this.setState({
+          mute: false,
+        });
+        audio.muted = false;
+      }
     }
 
     updateBuffered() {
@@ -135,9 +163,36 @@ export default class BottomControl extends React.Component {
           playThumbActive: true,
         });
       }
+
+      handleVolDown(e) {
+        this.setState({
+          volThumbActive: true,
+        });
+      }
+
+      handleMute() {
+        let mute = this.state.mute;
+        let audio = document.getElementById('audio');
+        audio.muted = !mute;
+        if(mute) {
+          this.setState({
+            mute: false,
+          });
+          this.updateVolume();
+        }else {
+          this.setState({
+            mute: true,
+          });
+          let volDot = document.getElementById("volDot");
+          let volThumb = document.getElementById("volThumb");
+          volDot.style.left = 0 + '%';
+          volThumb.style.width = 0 + '%';
+        }
+        
+      }
     
       mouseMove(e) {
-        if(this.state.playThumbActive){
+        if(this.state.playThumbActive) {
           let trackOffsetX = document.getElementById('barTrack').offsetLeft;
           let allWidth = document.getElementById('barTrack').clientWidth;
           let newLeft = e.clientX - trackOffsetX - 8;
@@ -145,6 +200,20 @@ export default class BottomControl extends React.Component {
           if(newLeft > allWidth - 16)newLeft = allWidth - 16;
           document.getElementById('thumbDot').style.left = `${newLeft}px`;
           document.getElementById('thumbTrack').style.width = `${newLeft}px`;
+        }
+        if(this.state.volThumbActive) {
+          let trackOffsetX = document.getElementById('volTrack').getBoundingClientRect().left;
+          let allWidth = document.getElementById('volTrack').clientWidth;
+          let newLeft = e.clientX - trackOffsetX;
+          if(newLeft < 0)newLeft = 0;
+          if(newLeft > allWidth)newLeft = allWidth;
+          let percent = newLeft / allWidth;
+          this.setState({
+            volume: percent,
+          });
+          setTimeout(() => {
+            this.updateVolume();
+          })
         }
       }
     
@@ -166,6 +235,11 @@ export default class BottomControl extends React.Component {
             this.updatePlayThumb();
           })
         }
+        if(this.state.volThumbActive) {
+          this.setState({
+            volThumbActive: false,
+          });
+        }
       }
 
       trackClick(e) {
@@ -185,6 +259,21 @@ export default class BottomControl extends React.Component {
           });
       }
     
+      volTrackClick(e) {
+        let trackOffsetX = document.getElementById('volTrack').getBoundingClientRect().left;
+        let allWidth = document.getElementById('volTrack').clientWidth;
+        let newLeft = e.clientX - trackOffsetX;
+        if(newLeft < 0)newLeft = 0;
+        if(newLeft > allWidth)newLeft = allWidth;
+        let percent = newLeft / allWidth;
+        this.setState({
+          volume: percent,
+        });
+        setTimeout(() => {
+          this.updateVolume();
+        })
+    }
+
       getSongDetail() {
         let songInfo = this.state.songInfo;
         if(!songInfo.id)return;
@@ -241,7 +330,11 @@ export default class BottomControl extends React.Component {
       handlePrev() {
         eventEmitter.emit(constStr.PLAYPREV);
       }
-
+      handleVolumeSet() {
+        this.setState({
+          volumeSet: !this.state.volumeSet,
+        })
+      }
     render() {
         let songInfo = this.state.songInfo;
         let songDetail = this.state.songDetail;
@@ -249,6 +342,8 @@ export default class BottomControl extends React.Component {
         if(songDetail.hasOwnProperty('al')) {
           cover = songDetail.al.picUrl;
         }
+        let volume = this.state.volume;
+        let mute = this.state.mute;
         return (
             <div className="music-bottom-bar">
             <div className="cover">
@@ -256,9 +351,9 @@ export default class BottomControl extends React.Component {
               <img src={cover || "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1446912299,3514293506&fm=27&gp=0.jpg"}/>
             </div>
             <div className="control">
-              <div className="pre iconfont icon-xiayishou-copy" onClick={this.handlePrev.bind(this)}></div>
-              <div className={`play iconfont ${this.state.playState?'icon-zanting':'icon-bofang'}`} onClick={this.handlePlay.bind(this)}></div>
-              <div className="next iconfont icon-xiayishou" onClick={this.handleNext.bind(this)}></div>
+              <div className="pre iconfont icon-shangyiqu" onClick={this.handlePrev.bind(this)}></div>
+              <div className={`play iconfont ${this.state.playState?'icon-pause_circle_filled':'icon-bofang3'}`} onClick={this.handlePlay.bind(this)}></div>
+              <div className="next iconfont icon-shangyiqu-copy" onClick={this.handleNext.bind(this)}></div>
             </div>
             <div className="progress-bar">
               <div className="bar-info">
@@ -282,11 +377,19 @@ export default class BottomControl extends React.Component {
               <div className="fav">
                 <div className="fav-icon iconfont icon-heart"></div>
               </div>
+              <div className="volume">
+                <div className={`volume-control ${this.state.volumeSet?'volume-control-active':''}`}>
+                  <span className={`icon iconfont ${(volume == 0 || mute)?'icon-bofangqi-yinliang1':'icon-bofangqi-yinliang'}`} onClick={this.handleMute.bind(this)}></span>
+                  <div className="vol-track-wrap">
+                    <div className="vol-dot" id="volDot" onMouseDown={this.handleVolDown.bind(this)}><i> </i></div>
+                    <div className="vol-thumb" id="volThumb"> </div>
+                    <div className="vol-track" id="volTrack" onClick={this.volTrackClick.bind(this)}> </div>
+                  </div>
+                </div>
+                <div className={`volume-icon iconfont ${(volume == 0 || mute)?'icon-bofangqi-yinliang1':'icon-bofangqi-yinliang'}`} onClick={this.handleVolumeSet.bind(this)}></div>
+              </div>
               <div className="loop">
                 <div className="loop-icon iconfont icon-list-loop"></div>
-              </div>
-              <div className="volume">
-                <div className="volume-icon iconfont icon-bofangqi-yinliang"></div>
               </div>
               <div className="list">
                 <div className="list-icon iconfont icon-liebiaoshouqi1"></div>

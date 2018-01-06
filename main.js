@@ -33,9 +33,20 @@ function createWindow() {
         win = null;
     });
 
-    installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+    // installExtension(REDUX_DEVTOOLS)
+    // .then((name) => console.log(`Added Extension:  ${name}`))
+    // .catch((err) => console.log('An error occurred: ', err));
+    win.on('ready-to-show',function() {
+        console.log('eeee')
+    let nativeHandleBuffer = win.getNativeWindowHandle();
+    let electronVibrancy = require(path.join(__dirname,'..','..'));
+    
+        electronVibrancy.SetVibrancy(win, 0);
+
+        win.show();
+
+    //electronVibrancy.DisableVibrancy(mainWindow);
+    })
 
 }
 
