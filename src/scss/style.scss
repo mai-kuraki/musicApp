@@ -147,7 +147,23 @@ position: relative;
 from { transform: rotate(0deg); } 
 to { transform: rotate(360deg); }
 }
-  
+
+#snackbar{
+    padding: 12px;
+    min-width: 120px;
+    max-width: 320px;
+    text-align: center;
+    background: rgba(0,0,0,.8);
+    z-index: 9999;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    font-size: 14px;
+    color: #FFF;
+    line-height: 1.8;
+    box-shadow: 0px 0px 5px rgba(0,0,0,.11);
+    transform: translate(-50%, -50%);
+}
 
 #main {
     width: 100%;
@@ -164,7 +180,7 @@ to { transform: rotate(360deg); }
         display: block;
         width: 100%;
         height: 100%;
-        background: rgba(255,255,255,.92);
+        // background: rgba(255,255,255,.92);
     }
     .main-wrap{
         width: 100%;
@@ -175,57 +191,9 @@ to { transform: rotate(360deg); }
         position: absolute;
         left: 0px;
         top: 0px;
-        .window-head{
-            width: 100%;
-            height: 42px;
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            .app-name{
-                width: 192px;
-                display: flex;
-                align-items: center;
-                padding-left: 12px;
-                -webkit-app-region: drag;
-                height: 100%;
-            }
-            .drag-bar{
-                flex: 1;
-                height: 100%;
-                -webkit-app-region: drag;
-                background: #FFF;
-            }
-            .window-option-button{
-                display: flex;
-                height: 100%;
-                background: #FFF;
-                div{
-                    display: flex;
-                    font-size: 13px;
-                    width: 47px;
-                    height: 100%;
-                    align-items: center;
-                    justify-content: center;
-                    transition: all 250ms ease;
-                    color: #999;
-                    &:hover{
-                        background: #F0F0F0;
-                    }
-                    &:active{
-                        background: #FBFBFB;
-                    }
-                    &:last-child{
-                        &:hover{
-                            background: #F95749;
-                            color: #FFF;
-                        }
-                    }
-                }
-            }
-        }
         .window-content{
             width: 100%;
-            height: calc(100% - 32px);
+            height: 100%;
             flex: 1;
             display: flex;
             overflow: hidden;
@@ -236,6 +204,17 @@ to { transform: rotate(360deg); }
                 height: 100%;
                 overflow: hidden;
                 background: none;
+                .app-name{
+                    width: 100%;
+                    height: 35px;
+                    line-height: 35px;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 12px;
+                    -webkit-app-region: drag;
+                    cursor: default;
+                    overflow: hidden;
+                }
                 .top-btn,.open-btn{
                     widows: 100%;
                     height: 45px;
@@ -346,6 +325,9 @@ to { transform: rotate(360deg); }
             .shrink{
                 width: 45px;
                 border-right: solid 1px #F3F3F5;
+                .app-name{
+                    display: none;
+                }
                 .open-btn{
                     display: block;
                 }
@@ -375,6 +357,50 @@ to { transform: rotate(360deg); }
                 flex: 1;
                 height: 100%;
                 overflow-y: auto;
+                position: relative;
+                .window-head{
+                    position: absolute;
+                    left: 0px;
+                    top: 0px;
+                    width: 100%;
+                    height: 35px;
+                    display: flex;
+                    align-items: center;
+                    font-size: 12px;
+                    background: none;
+                    z-index: 9999;
+                    .drag-bar{
+                        flex: 1;
+                        height: 100%;
+                        -webkit-app-region: drag;
+                    }
+                    .window-option-button{
+                        display: flex;
+                        height: 100%;
+                        div{
+                            display: flex;
+                            font-size: 13px;
+                            width: 47px;
+                            height: 100%;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 250ms ease;
+                            color: #999;
+                            &:hover{
+                                background: #F0F0F0;
+                            }
+                            &:active{
+                                background: #FBFBFB;
+                            }
+                            &:last-child{
+                                &:hover{
+                                    background: #F95749;
+                                    color: #FFF;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             .music-bottom-bar{
                 width: 100%;
@@ -387,7 +413,7 @@ to { transform: rotate(360deg); }
                 box-shadow: 0px -3px 3px rgba(165,165,165, .1);
                 color: #FFF;
                 .cover{
-                    width: 59px;
+                    width: 62px;
                     height: 100%;
                     position: relative;
                     flex: none;
@@ -409,7 +435,7 @@ to { transform: rotate(360deg); }
                             width: 100%;
                             height: 100%;
                             justify-content: center;
-                            line-height: 54px;
+                            line-height: 62px;
                             color: #FFF;
                             font-size: 32px;
                         }
@@ -688,6 +714,7 @@ to { transform: rotate(360deg); }
     width: 100%;
     height: 100%;
     position: relative;
+    padding-top: 35px;
     .scroll-box{
         height: 100%;
         padding: 20px 30px;
@@ -829,6 +856,11 @@ to { transform: rotate(360deg); }
                     width: 35%;
                     padding: 0px 16px;
                     display: flex;
+                    .playing{
+                        color: #F95749;
+                        font-size: 16px;
+                        margin-right: 8px;
+                    }
                     .mv{
                         color: #F95749;
                         font-size: 24px;

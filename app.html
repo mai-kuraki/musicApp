@@ -3,7 +3,7 @@
 <head>
     <title></title>
     <meta charset="UTF-8"></meta>
-    <link rel="stylesheet" href="http://at.alicdn.com/t/font_526745_nlps6ny51ex6flxr.css"/>
+    <link rel="stylesheet" href="http://at.alicdn.com/t/font_526745_z4y7fb733loqd7vi.css"/>
     <link rel='stylesheet' href='dist/style.css'/>
 </head>
 <body>
@@ -14,4 +14,21 @@
     const __REQUESTHOST = 'http://127.0.0.1:3003';
 </script>
 <script src="dist/bundle_app.js"></script>
+<script>
+    function snackbar(msg, time) {
+        let el = document.getElementById('snackbar');
+        if(el) el.remove();
+        let bar = document.createElement('div');
+        bar.innerText = msg || '';
+        bar.setAttribute('id', 'snackbar');
+        document.body.appendChild(bar);
+        if(typeof time != 'number') {
+            time = 2000;
+        }
+        setTimeout(() => {
+            let el = document.getElementById('snackbar');
+            if(el)el.remove();
+        }, time);
+    }
+</script>
 </html>

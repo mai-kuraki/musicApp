@@ -17,6 +17,7 @@ function createWindow() {
         frame: false,
         // titleBarStyle: 'hidden',
         transparent: true,
+        vibrancy: 'appearance-based'
     });
     //加载index.html
     win.loadURL(url.format({

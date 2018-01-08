@@ -18,6 +18,7 @@ export default class Search extends React.Component {
             songCount: 0,
             resultShow: false,
             curSong: {},
+            curPlaySong: {},
             hasSearch: false,
             loading: false,
             moreMenu: false,
@@ -64,84 +65,91 @@ export default class Search extends React.Component {
         if(!keyword) return;
         this.loading();
         (async () => {
-            let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`);
-            console.log('ddd')
-            this.loadingEnd();
-            if(req.status == 200) {
-                let data = req.data;
-                if(data.code == 200) {
-                    this.setState({
-                        hasSearch: true,
-                        songCount: data.result.songCount,
-                        songs: data.result.songs, 
-                    });
-                    store.dispatch(Actions.setSearchList(data.result.songs));
-                    console.log(store.getState());
+            try{
+                let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`, {timeout: 30 * 1000});
+                this.loadingEnd();
+                if(req.status == 200) {
+                    let data = req.data;
+                    if(data.code == 200) {
+                        this.setState({
+                            hasSearch: true,
+                            songCount: data.result.songCount,
+                            songs: data.result.songs, 
+                        });
+                        store.dispatch(Actions.setSearchList(data.result.songs));
+                        console.log(store.getState());
+                    }
                 }
+            }catch(e) {
+                snackbar('网络错误');
+                this.loadingEnd();
             }
         })();
     }
 
     page() {
         (async () => {
-            let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`);
-            console.log('ddd')
-            this.loadingEnd();
-            if(req.status == 200) {
-                let data = req.data;
-                if(data.code == 200) {
-                    let songs = this.state.songs
-                    let newSongs = songs.concat(data.result.songs || [])
-                    this.setState({
-                        hasSearch: true,
-                        songCount: data.result.songCount,
-                        songs: newSongs, 
-                    });
-                    store.dispatch(Actions.setSearchList(newSongs));
-                    console.log(store.getState());
+            try{
+                let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`, {timeout: 30 * 1000});
+                this.loadingEnd();
+                if(req.status == 200) {
+                    let data = req.data;
+                    if(data.code == 200) {
+                        let songs = this.state.songs
+                        let newSongs = songs.concat(data.result.songs || [])
+                        this.setState({
+                            hasSearch: true,
+                            songCount: data.result.songCount,
+                            songs: newSongs, 
+                        });
+                        store.dispatch(Actions.setSearchList(newSongs));
+                        console.log(store.getState());
+                    }
                 }
+            }catch(e) {
+                this.loadingEnd();
             }
         })();
     }
 
     nextSong() {
-        let curSong = this.state.curSong;
+        let curPlaySong = this.state.curPlaySong;
         let songs = this.state.songs;
         let all = songs.length;
         let curIndex;
         songs.map((data, k) => {
-            if(data.id == curSong.id) {
+            if(data.id == curPlaySong.id) {
                 curIndex = k;
             }
         });
         if(curIndex < all - 1) {
             this.setState({
-                curSong: songs[curIndex + 1],
+                curPlaySong: songs[curIndex + 1],
             });
-            store.dispatch(Actions.setCurSong(songs[curIndex + 1]));
+            store.dispatch(Actions.setCurPlaySong(songs[curIndex + 1]));
             setTimeout(() => {
-                this.playSong();
+                this.playSong(songs[curIndex + 1]);
             })
         }
     }
 
     prevSong() {
-        let curSong = this.state.curSong;
+        let curPlaySong = this.state.curPlaySong;
         let songs = this.state.songs;
         let all = songs.length;
         let curIndex;
         songs.map((data, k) => {
-            if(data.id == curSong.id) {
+            if(data.id == curPlaySong.id) {
                 curIndex = k;
             }
         });
         if(curIndex > 0) {
             this.setState({
-                curSong: songs[curIndex - 1],
+                curPlaySong: songs[curIndex - 1],
             });
-            store.dispatch(Actions.setCurSong(songs[curIndex - 1]))
+            store.dispatch(Actions.setCurPlaySong(songs[curIndex - 1]))
             setTimeout(() => {
-                this.playSong();
+                this.playSong(songs[curIndex - 1]);
             })
         }
     }
@@ -201,11 +209,19 @@ export default class Search extends React.Component {
         $(el).parents('li').addClass('select');
     }
 
-    playSong() {
-        let songData = this.state.curSong;
+    playSong(song, e) {
+        let songData
+        if(song) {
+            songData = this.state.curPlaySong;
+        }else {
+            songData = this.state.curSong;
+            this.setState({
+                curPlaySong: songData,
+            })
+        }
         if(!songData.id)return;
         (async () => {
-            let req = await axios.get(`${__REQUESTHOST}/api/music/url?id=${songData.id}`);
+            let req = await axios.get(`${__REQUESTHOST}/api/music/url?id=${songData.id}`, {timeout: 30 * 1000});
             if(req.status == 200) {
                 let data = req.data;
                 if(data.code == 200) {
@@ -239,6 +255,8 @@ export default class Search extends React.Component {
     render() {
         let songs = this.state.songs;
         let curSong = this.state.curSong;
+        let curPlaySong = store.getState().main.curPlaySong;
+        let playState = store.getState().main.playState;
         return(
             <div className="search-page">
             <div className="scroll-box">
@@ -278,15 +296,23 @@ export default class Search extends React.Component {
                                 return (
                                     <li className="clearfix" key={k} onClick={this.songSelect.bind(this, data)}>
                                         <div className="coum coum-1">
-                                            <span>{data.name}</span>
+                                        {
+                                            curPlaySong.id == data.id && playState?
+                                            <em className="playing iconfont icon-yinliang"></em>:null
+                                        } 
+                                        {
+                                            curPlaySong.id == data.id && !playState?
+                                            <em className="playing iconfont icon-yinliang1"></em>:null
+                                        }    
+                                        <span>{data.name}</span>
                                             {
                                                 data.mvid?<i className="mv iconfont icon-mv2"></i>:null
                                             }
                                         </div>
                                         <div className="coum coum-2">
                                             <div className="c-w">
-                                            <span className="play iconfont icon-bofang2" onClick={this.playSong.bind(this)}></span>
-                                            <span className="more iconmore iconfont icon-caidan" onClick={this.moreMenu.bind(this)}></span>
+                                            <span className="play iconfont icon-bofang1" onClick={this.playSong.bind(this, null)}></span>
+                                            <span className="more iconmore iconfont icon-gengduo" onClick={this.moreMenu.bind(this)}></span>
                                             <span className="download-flag iconfont icon-gou"></span>
                                             </div>
                                         </div>

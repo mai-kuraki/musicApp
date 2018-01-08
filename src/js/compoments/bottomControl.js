@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import * as constStr from '../lib/const';
+import store from '../store';
+import * as Actions from '../actions';
 import eventEmitter from '../lib/eventEmitter';
 
 export default class BottomControl extends React.Component {
@@ -133,6 +135,8 @@ export default class BottomControl extends React.Component {
     initAudio(songInfo, urlInfo) {
       let audio = document.getElementById('audio');
       audio.play();
+      store.dispatch(Actions.setPlayState(true));
+      store.dispatch(Actions.setCurPlaySong(songInfo));
       this.setState({
         playState: true,
         songInfo: songInfo,
@@ -150,8 +154,10 @@ export default class BottomControl extends React.Component {
         let audio = document.getElementById('audio');
         if(this.state.playState) {
           audio.pause();
+          store.dispatch(Actions.setPlayState(false));
         }else {
           audio.play();
+          store.dispatch(Actions.setPlayState(true));
         }
         this.setState({
           playState: !this.state.playState,
@@ -278,15 +284,19 @@ export default class BottomControl extends React.Component {
         let songInfo = this.state.songInfo;
         if(!songInfo.id)return;
         (async () => {
-          let req = await axios.get(`${__REQUESTHOST}/api/song/detail?ids=${songInfo.id}`);
-          if(req.status == 200) {
-              let data = req.data;
-              if(data.code == 200) {
-                  this.setState({
-                    songDetail: data.songs.length > 0?data.songs[0]:{},
-                    privileges: data.privileges,
-                  })
-              }
+          try {
+            let req = await axios.get(`${__REQUESTHOST}/api/song/detail?ids=${songInfo.id}`, {timeout: 30 * 1000});
+            if(req.status == 200) {
+                let data = req.data;
+                if(data.code == 200) {
+                    this.setState({
+                      songDetail: data.songs.length > 0?data.songs[0]:{},
+                      privileges: data.privileges,
+                    })
+                }
+            }
+          }catch(e) {
+
           }
         })();
       }

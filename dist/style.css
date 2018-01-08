@@ -163,6 +163,23 @@ input[placeholder] {
   }
 }
 
+#snackbar {
+  padding: 12px;
+  min-width: 120px;
+  max-width: 320px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 9999;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  font-size: 14px;
+  color: #FFF;
+  line-height: 1.8;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.11);
+  transform: translate(-50%, -50%);
+}
+
 #main {
   width: 100%;
   height: 100%;
@@ -181,7 +198,6 @@ input[placeholder] {
   display: block;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.92);
 }
 
 #main .main-wrap {
@@ -195,63 +211,9 @@ input[placeholder] {
   top: 0px;
 }
 
-#main .main-wrap .window-head {
-  width: 100%;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  font-size: 12px;
-}
-
-#main .main-wrap .window-head .app-name {
-  width: 192px;
-  display: flex;
-  align-items: center;
-  padding-left: 12px;
-  -webkit-app-region: drag;
-  height: 100%;
-}
-
-#main .main-wrap .window-head .drag-bar {
-  flex: 1;
-  height: 100%;
-  -webkit-app-region: drag;
-  background: #FFF;
-}
-
-#main .main-wrap .window-head .window-option-button {
-  display: flex;
-  height: 100%;
-  background: #FFF;
-}
-
-#main .main-wrap .window-head .window-option-button div {
-  display: flex;
-  font-size: 13px;
-  width: 47px;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  transition: all 250ms ease;
-  color: #999;
-}
-
-#main .main-wrap .window-head .window-option-button div:hover {
-  background: #F0F0F0;
-}
-
-#main .main-wrap .window-head .window-option-button div:active {
-  background: #FBFBFB;
-}
-
-#main .main-wrap .window-head .window-option-button div:last-child:hover {
-  background: #F95749;
-  color: #FFF;
-}
-
 #main .main-wrap .window-content {
   width: 100%;
-  height: calc(100% - 32px);
+  height: 100%;
   flex: 1;
   display: flex;
   overflow: hidden;
@@ -264,6 +226,18 @@ input[placeholder] {
   height: 100%;
   overflow: hidden;
   background: none;
+}
+
+#main .main-wrap .window-content .left-nav .app-name {
+  width: 100%;
+  height: 35px;
+  line-height: 35px;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  -webkit-app-region: drag;
+  cursor: default;
+  overflow: hidden;
 }
 
 #main .main-wrap .window-content .left-nav .top-btn, #main .main-wrap .window-content .left-nav .open-btn {
@@ -394,6 +368,10 @@ input[placeholder] {
   border-right: solid 1px #F3F3F5;
 }
 
+#main .main-wrap .window-content .shrink .app-name {
+  display: none;
+}
+
 #main .main-wrap .window-content .shrink .open-btn {
   display: block;
 }
@@ -426,6 +404,55 @@ input[placeholder] {
   flex: 1;
   height: 100%;
   overflow-y: auto;
+  position: relative;
+}
+
+#main .main-wrap .window-content .right-content .window-head {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  background: none;
+  z-index: 9999;
+}
+
+#main .main-wrap .window-content .right-content .window-head .drag-bar {
+  flex: 1;
+  height: 100%;
+  -webkit-app-region: drag;
+}
+
+#main .main-wrap .window-content .right-content .window-head .window-option-button {
+  display: flex;
+  height: 100%;
+}
+
+#main .main-wrap .window-content .right-content .window-head .window-option-button div {
+  display: flex;
+  font-size: 13px;
+  width: 47px;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  transition: all 250ms ease;
+  color: #999;
+}
+
+#main .main-wrap .window-content .right-content .window-head .window-option-button div:hover {
+  background: #F0F0F0;
+}
+
+#main .main-wrap .window-content .right-content .window-head .window-option-button div:active {
+  background: #FBFBFB;
+}
+
+#main .main-wrap .window-content .right-content .window-head .window-option-button div:last-child:hover {
+  background: #F95749;
+  color: #FFF;
 }
 
 #main .main-wrap .window-content .music-bottom-bar {
@@ -441,7 +468,7 @@ input[placeholder] {
 }
 
 #main .main-wrap .window-content .music-bottom-bar .cover {
-  width: 59px;
+  width: 62px;
   height: 100%;
   position: relative;
   flex: none;
@@ -466,7 +493,7 @@ input[placeholder] {
   width: 100%;
   height: 100%;
   justify-content: center;
-  line-height: 54px;
+  line-height: 62px;
   color: #FFF;
   font-size: 32px;
 }
@@ -767,6 +794,7 @@ input[placeholder] {
   width: 100%;
   height: 100%;
   position: relative;
+  padding-top: 35px;
 }
 
 .search-page .scroll-box {
@@ -933,6 +961,12 @@ input[placeholder] {
   width: 35%;
   padding: 0px 16px;
   display: flex;
+}
+
+.search-page .result-area .songs-item li .coum-1 .playing {
+  color: #F95749;
+  font-size: 16px;
+  margin-right: 8px;
 }
 
 .search-page .result-area .songs-item li .coum-1 .mv {

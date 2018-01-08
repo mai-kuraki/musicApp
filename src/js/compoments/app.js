@@ -61,18 +61,17 @@ export default class App extends React.Component {
           onMouseUp={(e) => {this.refs.BottomControl.mouseUp(e)}}
         >
           <audio id="audio" src="./download/Sigrid-EverybodyKnows.mp3"/>
-          <div className="window-head">
-            <div className="app-name">Groove Music</div>
-            <div className="drag-bar"></div>
-            <div className="window-option-button">
-              <div className="small iconfont icon-zuixiaohua" onClick={this.minimize.bind(this)}></div>
-              <div className={`big iconfont ${this.state.windowSize == 'normal'?'icon-fangbiankuang':'icon-chuangkou01'}`} onClick={this.resizeWindow.bind(this)}></div>
-              <div className="close iconfont icon-guanbi1" onClick={this.close.bind(this)}></div>
-            </div>
-          </div>
           <div className="window-content">
-            <Route render={props => <LeftNav {...props} />} />
+            <Route render={props => <LeftNav ref="leftNav" {...props} />} />
             <div className="right-content">
+              <div className="window-head">
+              <div className="drag-bar"></div>
+              <div className="window-option-button">
+                <div className="small iconfont icon-zuixiaohua" onClick={this.minimize.bind(this)}></div>
+                <div className={`big iconfont ${this.state.windowSize == 'normal'?'icon-fangbiankuang':'icon-chuangkou01'}`} onClick={this.resizeWindow.bind(this)}></div>
+                <div className="close iconfont icon-guanbi1" onClick={this.close.bind(this)}></div>
+              </div>
+            </div>
             <Switch>
               {
                 routers.map((data, k) => {

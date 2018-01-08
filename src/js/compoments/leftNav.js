@@ -52,6 +52,7 @@ export default class LeftNav extends React.Component {
         let item1 = this.state.item1 || [];
         return(
         <div className={`left-nav ${this.state.menuState?'':'shrink'}`}>
+            <div className="app-name">Groove Music</div>
             <div className="top-btn"><span className="btn iconfont icon-44" onClick={this.leftNavHandle.bind(this)}></span></div>
             <div className="menu-list">
             <ul className="item item1">
