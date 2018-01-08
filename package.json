@@ -3,6 +3,7 @@
     "version": "0.1.0",
     "main": "main.js",
     "dependencies": {
-        "electron-devtools-installer": "^2.2.3"
+        "electron-devtools-installer": "^2.2.3",
+        "electron-vibrancy": "^0.1.3"
     }
 }

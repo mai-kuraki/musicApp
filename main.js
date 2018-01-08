@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const electronVibrancy = require('electron-vibrancy');
 const path = require('path');
 const url = require('url');
 const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
@@ -8,6 +9,7 @@ const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools
 let win;
 
 function createWindow() {
+    console.log('a')
     //创建浏览器窗口
     win = new BrowserWindow({
         width: 1200,
@@ -17,7 +19,8 @@ function createWindow() {
         frame: false,
         // titleBarStyle: 'hidden',
         transparent: true,
-        vibrancy: 'appearance-based'
+        show: false
+        // vibrancy: 'appearance-based'
     });
     //加载index.html
     win.loadURL(url.format({
@@ -34,21 +37,17 @@ function createWindow() {
         win = null;
     });
 
-    // installExtension(REDUX_DEVTOOLS)
-    // .then((name) => console.log(`Added Extension:  ${name}`))
-    // .catch((err) => console.log('An error occurred: ', err));
     win.on('ready-to-show',function() {
-        console.log('eeee')
-    let nativeHandleBuffer = win.getNativeWindowHandle();
-    let electronVibrancy = require(path.join(__dirname,'..','..'));
-    
+        console.log('b')
+        let nativeHandleBuffer = win.getNativeWindowHandle();
         electronVibrancy.SetVibrancy(win, 0);
 
         win.show();
+    });
 
-    //electronVibrancy.DisableVibrancy(mainWindow);
-    })
-
+    // installExtension(REDUX_DEVTOOLS)
+    // .then((name) => console.log(`Added Extension:  ${name}`))
+    // .catch((err) => console.log('An error occurred: ', err));
 }
 
 // Electron 会在初始化后并准备
