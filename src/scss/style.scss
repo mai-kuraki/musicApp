@@ -179,8 +179,8 @@ to { transform: rotate(360deg); }
     .blur{
         display: block;
         width: 100%;
-        height: 100%;
-        background: rgba(255,255,255,.9);
+        height: calc(100% - 62px);
+        background: rgba(0,0,0,.13);
     }
     .main-wrap{
         width: 100%;
@@ -198,10 +198,10 @@ to { transform: rotate(360deg); }
             display: flex;
             overflow: hidden;
             position: relative;
-            padding-bottom: 62px;
             .left-nav{
                 width: 192px;
                 height: 100%;
+                padding-bottom: 62px;
                 overflow: hidden;
                 background: none;
                 .app-name{
@@ -236,7 +236,7 @@ to { transform: rotate(360deg); }
                 }
                 .menu-list{
                     width: 100%;
-                    height: calc(100% - 45px - 60px);
+                    height: calc(100% - 45px - 95px);
                     overflow-x: hidden;
                     overflow-y: auto;
                     .item{
@@ -369,6 +369,9 @@ to { transform: rotate(360deg); }
                     font-size: 12px;
                     background: none;
                     z-index: 9999;
+                    &:hover{
+                        background: none;
+                    }
                     .drag-bar{
                         flex: 1;
                         height: 100%;
@@ -710,7 +713,7 @@ to { transform: rotate(360deg); }
 }
 
 .search-page{
-    background: #FFF;
+    background: rgba(255,255,255,0.5);
     width: 100%;
     height: 100%;
     position: relative;
@@ -735,6 +738,7 @@ to { transform: rotate(360deg); }
         height: 48px;
         position: relative;
         box-shadow: 1px 1px 8px rgba(0,0,0,.12), -1px 1px 8px rgba(0,0,0,.12);
+        background: rgba(255,255,255,.65);
         input{
             display: flex;
             align-items: center;
@@ -745,6 +749,7 @@ to { transform: rotate(360deg); }
             padding: 10px 12px;
             font-size: 16px;
             padding-right: 48px;
+            background: none;
             &::-webkit-input-placeholder{
                 color: #E3E2E4;
             }
@@ -773,18 +778,20 @@ to { transform: rotate(360deg); }
                 width: 100%;
                 height: 46px;
                 overflow: hidden;
-                border-bottom: solid 1px #e4e4e4;
+                outline: none;
                 cursor: default;
                 .react-tabs__tab{
                     float: left;
                     height: 45px;
                     line-height: 48px;
                     margin-right: 23px;
-                    font-size: 18px;
+                    font-size: 16px;
+                    outline: none;
                 }
                 .react-tabs__tab--selected{
                     color: #F95949;
                     position: relative;
+                    outline: none;
                     &::before{
                         content: '';
                         display: block;
@@ -799,7 +806,7 @@ to { transform: rotate(360deg); }
             }
         }
         .react-tabs__tab-panel {
-            height: calc(100% - 46px);
+            height: calc(100% - 46px - 16px);
             margin-top: 16px;
         }
         .songs-item{
@@ -807,6 +814,10 @@ to { transform: rotate(360deg); }
             width: 100%;
             height: 100%;
             overflow-y: auto; 
+            .list-wrap{
+                height: auto;
+                padding-bottom: 62px;
+            }
             .more-menu{
                 width: 275px;
                 border: solid 1px #E9E9EB;
@@ -917,7 +928,7 @@ to { transform: rotate(360deg); }
                 }
             }
             .select{
-                background: #F3F3F5;
+                background: rgba(243, 246, 245, 0.8);
                 .coum-2{
                     width: 90px;
                     display: flex;

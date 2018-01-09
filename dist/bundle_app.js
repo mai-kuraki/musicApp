@@ -39384,6 +39384,15 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var typeMap = [1, //单曲
+100, //歌手
+10, //专辑
+1004, //MV
+1000, //歌单
+1009, //电台
+1002, //用户
+1006];
+
 var Search = function (_React$Component) {
     _inherits(Search, _React$Component);
 
@@ -39395,6 +39404,8 @@ var Search = function (_React$Component) {
         _this.state = {
             keyword: '',
             songs: [],
+            artists: [],
+            artistsCount: 0,
             songCount: 0,
             resultShow: false,
             curSong: {},
@@ -39402,7 +39413,9 @@ var Search = function (_React$Component) {
             hasSearch: false,
             loading: false,
             moreMenu: false,
-            limit: 30
+            limit: 30,
+            offset: 0,
+            type: 0
         };
         return _this;
     }
@@ -39454,6 +39467,7 @@ var Search = function (_React$Component) {
 
             var keyword = this.state.keyword;
             if (!keyword) return;
+            var type = typeMap[this.state.type];
             this.loading();
             _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
                 var req, data;
@@ -39463,7 +39477,7 @@ var Search = function (_React$Component) {
                             case 0:
                                 _context.prev = 0;
                                 _context.next = 3;
-                                return _axios2.default.get(__REQUESTHOST + '/api/search?keywords=' + keyword, { timeout: 30 * 1000 });
+                                return _axios2.default.get(__REQUESTHOST + '/api/search?keywords=' + keyword + '&offset=0&type=' + type, { timeout: 30 * 1000 });
 
                             case 3:
                                 req = _context.sent;
@@ -39473,13 +39487,23 @@ var Search = function (_React$Component) {
                                     data = req.data;
 
                                     if (data.code == 200) {
-                                        _this3.setState({
-                                            hasSearch: true,
-                                            songCount: data.result.songCount,
-                                            songs: data.result.songs
-                                        });
-                                        _store2.default.dispatch(Actions.setSearchList(data.result.songs));
-                                        console.log(_store2.default.getState());
+                                        if (type == 1) {
+                                            _this3.setState({
+                                                hasSearch: true,
+                                                songCount: data.result.songCount,
+                                                songs: data.result.songs,
+                                                offset: 30
+                                            });
+                                            _store2.default.dispatch(Actions.setSearchList(data.result.songs));
+                                        } else if (type == 100) {
+                                            _this3.setState({
+                                                hasSearch: true,
+                                                artistsCount: data.result.songCount,
+                                                artists: data.result.artists,
+                                                offset: 30
+                                            });
+                                            _store2.default.dispatch(Actions.setSearchList(data.result.songs));
+                                        } else if (type == 10) {} else if (type == 1004) {}
                                     }
                                 }
                                 _context.next = 12;
@@ -39505,6 +39529,10 @@ var Search = function (_React$Component) {
         value: function page() {
             var _this4 = this;
 
+            var keyword = this.state.keyword;
+            if (!keyword) return;
+            this.loading();
+            var type = typeMap[this.state.type];
             _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
                 var req, data, songs, newSongs;
                 return regeneratorRuntime.wrap(function _callee2$(_context2) {
@@ -39513,7 +39541,7 @@ var Search = function (_React$Component) {
                             case 0:
                                 _context2.prev = 0;
                                 _context2.next = 3;
-                                return _axios2.default.get(__REQUESTHOST + '/api/search?keywords=' + keyword, { timeout: 30 * 1000 });
+                                return _axios2.default.get(__REQUESTHOST + '/api/search?keywords=' + keyword + '&offset=' + _this4.state.offset + '&type=' + type, { timeout: 30 * 1000 });
 
                             case 3:
                                 req = _context2.sent;
@@ -39529,7 +39557,8 @@ var Search = function (_React$Component) {
                                         _this4.setState({
                                             hasSearch: true,
                                             songCount: data.result.songCount,
-                                            songs: newSongs
+                                            songs: newSongs,
+                                            offset: _this4.state.offset + 30
                                         });
                                         _store2.default.dispatch(Actions.setSearchList(newSongs));
                                         console.log(_store2.default.getState());
@@ -39727,6 +39756,18 @@ var Search = function (_React$Component) {
             });
         }
     }, {
+        key: 'listScroll',
+        value: function listScroll(e) {
+            var scrollTop = e.target.scrollTop + '';
+            var boxHeight = (0, _jquery2.default)(e.target).height() + '';
+            var listHeight = (0, _jquery2.default)(e.target).find('.list-wrap').height() + '';
+            if (parseFloat(listHeight) - parseFloat(boxHeight) - parseFloat(scrollTop) == -62) {
+                if (!this.state.loading) {
+                    this.page();
+                }
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this8 = this;
@@ -39762,7 +39803,9 @@ var Search = function (_React$Component) {
                         { className: 'result-area' },
                         _react2.default.createElement(
                             _reactTabs.Tabs,
-                            null,
+                            { selectedIndex: this.state.type, onSelect: function onSelect(type) {
+                                    console.log(type);_this8.setState({ type: type });
+                                } },
                             _react2.default.createElement(
                                 _reactTabs.TabList,
                                 null,
@@ -39786,147 +39829,152 @@ var Search = function (_React$Component) {
                                     null,
                                     'MV'
                                 ),
-                                _react2.default.createElement(
-                                    _reactTabs.Tab,
+                                 false ? _react2.default.createElement(
+                                    'div',
                                     null,
-                                    '\u6B4C\u5355'
-                                ),
-                                _react2.default.createElement(
-                                    _reactTabs.Tab,
-                                    null,
-                                    '\u4E3B\u64AD\u7535\u53F0'
-                                ),
-                                _react2.default.createElement(
-                                    _reactTabs.Tab,
-                                    null,
-                                    '\u7528\u6237'
-                                )
+                                    _react2.default.createElement(
+                                        _reactTabs.Tab,
+                                        null,
+                                        '\u6B4C\u5355'
+                                    ),
+                                    _react2.default.createElement(
+                                        _reactTabs.Tab,
+                                        null,
+                                        '\u4E3B\u64AD\u7535\u53F0'
+                                    ),
+                                    _react2.default.createElement(
+                                        _reactTabs.Tab,
+                                        null,
+                                        '\u7528\u6237'
+                                    )
+                                ) : null
                             ),
                             _react2.default.createElement(
                                 _reactTabs.TabPanel,
                                 null,
                                 _react2.default.createElement(
                                     'ul',
-                                    { className: 'songs-item' },
-                                    songs.map(function (data, k) {
-                                        return _react2.default.createElement(
-                                            'li',
-                                            { className: 'clearfix', key: k, onClick: _this8.songSelect.bind(_this8, data) },
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'coum coum-1' },
-                                                curPlaySong.id == data.id && playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang' }) : null,
-                                                curPlaySong.id == data.id && !playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang1' }) : null,
-                                                _react2.default.createElement(
-                                                    'span',
-                                                    null,
-                                                    data.name
-                                                ),
-                                                data.mvid ? _react2.default.createElement('i', { className: 'mv iconfont icon-mv2' }) : null
-                                            ),
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'coum coum-2' },
+                                    { className: 'songs-item', onScroll: this.listScroll.bind(this) },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { className: 'list-wrap' },
+                                        songs.map(function (data, k) {
+                                            return _react2.default.createElement(
+                                                'li',
+                                                { className: 'clearfix', key: k, onClick: _this8.songSelect.bind(_this8, data) },
                                                 _react2.default.createElement(
                                                     'div',
-                                                    { className: 'c-w' },
-                                                    _react2.default.createElement('span', { className: 'play iconfont icon-bofang1', onClick: _this8.playSong.bind(_this8, null) }),
-                                                    _react2.default.createElement('span', { className: 'more iconmore iconfont icon-gengduo', onClick: _this8.moreMenu.bind(_this8) }),
-                                                    _react2.default.createElement('span', { className: 'download-flag iconfont icon-gou' })
+                                                    { className: 'coum coum-1' },
+                                                    curPlaySong.id == data.id && playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang' }) : null,
+                                                    curPlaySong.id == data.id && !playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang1' }) : null,
+                                                    _react2.default.createElement(
+                                                        'span',
+                                                        null,
+                                                        data.name
+                                                    ),
+                                                    data.mvid ? _react2.default.createElement('i', { className: 'mv iconfont icon-mv2' }) : null
+                                                ),
+                                                _react2.default.createElement(
+                                                    'div',
+                                                    { className: 'coum coum-2' },
+                                                    _react2.default.createElement(
+                                                        'div',
+                                                        { className: 'c-w' },
+                                                        _react2.default.createElement('span', { className: 'play iconfont icon-bofang1', onClick: _this8.playSong.bind(_this8, null) }),
+                                                        _react2.default.createElement('span', { className: 'more iconmore iconfont icon-gengduo', onClick: _this8.moreMenu.bind(_this8) }),
+                                                        _react2.default.createElement('span', { className: 'download-flag iconfont icon-gou' })
+                                                    )
+                                                ),
+                                                _react2.default.createElement(
+                                                    'div',
+                                                    { className: 'coum coum-3' },
+                                                    data.artists[0].name
+                                                ),
+                                                _react2.default.createElement(
+                                                    'div',
+                                                    { className: 'coum coum-4' },
+                                                    data.album.name
+                                                ),
+                                                _react2.default.createElement(
+                                                    'div',
+                                                    { className: 'coum coum-5' },
+                                                    _this8.formatSeconds(data.duration / 1000)
+                                                ),
+                                                _react2.default.createElement(
+                                                    'div',
+                                                    { className: 'coum coum-6' },
+                                                     false ? _react2.default.createElement('span', { className: 'sq iconfont icon-ttpodicon' }) : null
+                                                )
+                                            );
+                                        }),
+                                        this.state.moreMenu ? _react2.default.createElement(
+                                            'div',
+                                            { className: 'more-menu' },
+                                            _react2.default.createElement(
+                                                'div',
+                                                { className: 'item' },
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u4E0B\u4E00\u9996\u64AD\u653E'
                                                 )
                                             ),
+                                            _react2.default.createElement('span', { className: 'line' }),
                                             _react2.default.createElement(
                                                 'div',
-                                                { className: 'coum coum-3' },
-                                                data.artists[0].name
+                                                { className: 'item' },
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u6536\u85CF'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u4E0B\u8F7D'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u8BC4\u8BBA'
+                                                ),
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u5206\u4EAB'
+                                                )
                                             ),
+                                            _react2.default.createElement('span', { className: 'line' }),
                                             _react2.default.createElement(
                                                 'div',
-                                                { className: 'coum coum-4' },
-                                                data.album.name
-                                            ),
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'coum coum-5' },
-                                                _this8.formatSeconds(data.duration / 1000)
-                                            ),
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'coum coum-6' },
-                                                 false ? _react2.default.createElement('span', { className: 'sq iconfont icon-ttpodicon' }) : null
+                                                { className: 'item' },
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u6B4C\u624B\uFF1A',
+                                                    curSong.artists[0].name
+                                                ),
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u4E13\u8F91\uFF1A',
+                                                    curSong.album.name
+                                                ),
+                                                curSong.mvid ? _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u67E5\u770BMV'
+                                                ) : null,
+                                                _react2.default.createElement(
+                                                    'button',
+                                                    null,
+                                                    '\u6253\u5F00\u6587\u4EF6\u6240\u5728\u76EE\u5F55'
+                                                )
                                             )
-                                        );
-                                    }),
-                                    this.state.moreMenu ? _react2.default.createElement(
-                                        'div',
-                                        { className: 'more-menu' },
-                                        _react2.default.createElement(
-                                            'div',
-                                            { className: 'item' },
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u4E0B\u4E00\u9996\u64AD\u653E'
-                                            )
-                                        ),
-                                        _react2.default.createElement('span', { className: 'line' }),
-                                        _react2.default.createElement(
-                                            'div',
-                                            { className: 'item' },
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u6536\u85CF'
-                                            ),
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u4E0B\u8F7D'
-                                            ),
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u8BC4\u8BBA'
-                                            ),
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u5206\u4EAB'
-                                            )
-                                        ),
-                                        _react2.default.createElement('span', { className: 'line' }),
-                                        _react2.default.createElement(
-                                            'div',
-                                            { className: 'item' },
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u6B4C\u624B\uFF1A',
-                                                curSong.artists[0].name
-                                            ),
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u4E13\u8F91\uFF1A',
-                                                curSong.album.name
-                                            ),
-                                            curSong.mvid ? _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u67E5\u770BMV'
-                                            ) : null,
-                                            _react2.default.createElement(
-                                                'button',
-                                                null,
-                                                '\u6253\u5F00\u6587\u4EF6\u6240\u5728\u76EE\u5F55'
-                                            )
-                                        )
-                                    ) : null
+                                        ) : null
+                                    )
                                 )
                             ),
-                            _react2.default.createElement(_reactTabs.TabPanel, null),
-                            _react2.default.createElement(_reactTabs.TabPanel, null),
-                            _react2.default.createElement(_reactTabs.TabPanel, null),
                             _react2.default.createElement(_reactTabs.TabPanel, null),
                             _react2.default.createElement(_reactTabs.TabPanel, null),
                             _react2.default.createElement(_reactTabs.TabPanel, null)

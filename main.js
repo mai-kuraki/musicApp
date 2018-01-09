@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const electronVibrancy = require('electron-vibrancy');
+const electronVibrancy = require('./electron-vibrancy-mac');
 const path = require('path');
 const url = require('url');
 const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
@@ -12,6 +12,7 @@ function createWindow() {
     console.log('a')
     //创建浏览器窗口
     win = new BrowserWindow({
+        center: true,
         width: 1200,
         height: 800,
         minWidth: 500,
@@ -38,10 +39,7 @@ function createWindow() {
     });
 
     win.on('ready-to-show',function() {
-        console.log('b')
-        let nativeHandleBuffer = win.getNativeWindowHandle();
-        electronVibrancy.SetVibrancy(win, 0);
-
+        electronVibrancy.SetVibrancy(win, 8);
         win.show();
     });
 

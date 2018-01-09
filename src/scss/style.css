@@ -197,7 +197,8 @@ input[placeholder] {
 #main .blur {
   display: block;
   width: 100%;
-  height: 100%;
+  height: calc(100% - 62px);
+  background: rgba(0, 0, 0, 0.13);
 }
 
 #main .main-wrap {
@@ -218,12 +219,12 @@ input[placeholder] {
   display: flex;
   overflow: hidden;
   position: relative;
-  padding-bottom: 62px;
 }
 
 #main .main-wrap .window-content .left-nav {
   width: 192px;
   height: 100%;
+  padding-bottom: 62px;
   overflow: hidden;
   background: none;
 }
@@ -265,7 +266,7 @@ input[placeholder] {
 
 #main .main-wrap .window-content .left-nav .menu-list {
   width: 100%;
-  height: calc(100% - 45px - 60px);
+  height: calc(100% - 45px - 95px);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -418,6 +419,10 @@ input[placeholder] {
   font-size: 12px;
   background: none;
   z-index: 9999;
+}
+
+#main .main-wrap .window-content .right-content .window-head:hover {
+  background: none;
 }
 
 #main .main-wrap .window-content .right-content .window-head .drag-bar {
@@ -790,7 +795,7 @@ input[placeholder] {
 }
 
 .search-page {
-  background: #FFF;
+  background: rgba(255, 255, 255, 0.5);
   width: 100%;
   height: 100%;
   position: relative;
@@ -819,6 +824,7 @@ input[placeholder] {
   height: 48px;
   position: relative;
   box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.12), -1px 1px 8px rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.65);
 }
 
 .search-page .search-box input {
@@ -831,6 +837,7 @@ input[placeholder] {
   padding: 10px 12px;
   font-size: 16px;
   padding-right: 48px;
+  background: none;
 }
 
 .search-page .search-box input::-webkit-input-placeholder {
@@ -865,7 +872,7 @@ input[placeholder] {
   width: 100%;
   height: 46px;
   overflow: hidden;
-  border-bottom: solid 1px #e4e4e4;
+  outline: none;
   cursor: default;
 }
 
@@ -874,12 +881,14 @@ input[placeholder] {
   height: 45px;
   line-height: 48px;
   margin-right: 23px;
-  font-size: 18px;
+  font-size: 16px;
+  outline: none;
 }
 
 .search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab--selected {
   color: #F95949;
   position: relative;
+  outline: none;
 }
 
 .search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab--selected::before {
@@ -894,7 +903,7 @@ input[placeholder] {
 }
 
 .search-page .result-area .react-tabs__tab-panel {
-  height: calc(100% - 46px);
+  height: calc(100% - 46px - 16px);
   margin-top: 16px;
 }
 
@@ -903,6 +912,11 @@ input[placeholder] {
   width: 100%;
   height: 100%;
   overflow-y: auto;
+}
+
+.search-page .result-area .songs-item .list-wrap {
+  height: auto;
+  padding-bottom: 62px;
 }
 
 .search-page .result-area .songs-item .more-menu {
@@ -1034,7 +1048,7 @@ input[placeholder] {
 }
 
 .search-page .result-area .songs-item .select {
-  background: #F3F3F5;
+  background: rgba(243, 246, 245, 0.8);
 }
 
 .search-page .result-area .songs-item .select .coum-2 {

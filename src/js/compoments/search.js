@@ -8,13 +8,24 @@ import Loading from './loading';
 import * as constStr from '../lib/const';
 import * as Actions from '../actions';
 import eventEmitter from '../lib/eventEmitter';
-
+const typeMap = [
+    1,//单曲
+    100,//歌手
+    10,//专辑
+    1004,//MV
+    1000,//歌单
+    1009,//电台
+    1002,//用户
+    1006,//歌词
+]
 export default class Search extends React.Component {
     constructor() {
         super();
         this.state = {
             keyword: '',
             songs: [],
+            artists: [],
+            artistsCount: 0,
             songCount: 0,
             resultShow: false,
             curSong: {},
@@ -23,6 +34,8 @@ export default class Search extends React.Component {
             loading: false,
             moreMenu: false,
             limit: 30,
+            offset: 0,
+            type: 0,
         }
     }
 
@@ -63,21 +76,36 @@ export default class Search extends React.Component {
     search() {
         let keyword = this.state.keyword;
         if(!keyword) return;
+        let type = typeMap[this.state.type];
         this.loading();
         (async () => {
             try{
-                let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`, {timeout: 30 * 1000});
+                let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}&offset=0&type=${type}`, {timeout: 30 * 1000});
                 this.loadingEnd();
                 if(req.status == 200) {
                     let data = req.data;
                     if(data.code == 200) {
-                        this.setState({
-                            hasSearch: true,
-                            songCount: data.result.songCount,
-                            songs: data.result.songs, 
-                        });
-                        store.dispatch(Actions.setSearchList(data.result.songs));
-                        console.log(store.getState());
+                        if(type == 1) {
+                            this.setState({
+                                hasSearch: true,
+                                songCount: data.result.songCount,
+                                songs: data.result.songs, 
+                                offset: 30,
+                            });
+                            store.dispatch(Actions.setSearchList(data.result.songs));
+                        }else if(type == 100) {
+                            this.setState({
+                                hasSearch: true,
+                                artistsCount: data.result.songCount,
+                                artists: data.result.artists, 
+                                offset: 30,
+                            });
+                            store.dispatch(Actions.setSearchList(data.result.songs));
+                        }else if(type == 10) {
+
+                        }else if(type == 1004) {
+
+                        }
                     }
                 }
             }catch(e) {
@@ -88,9 +116,13 @@ export default class Search extends React.Component {
     }
 
     page() {
+        let keyword = this.state.keyword;
+        if(!keyword) return;
+        this.loading();
+        let type = typeMap[this.state.type];
         (async () => {
             try{
-                let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}`, {timeout: 30 * 1000});
+                let req = await axios.get(`${__REQUESTHOST}/api/search?keywords=${keyword}&offset=${this.state.offset}&type=${type}`, {timeout: 30 * 1000});
                 this.loadingEnd();
                 if(req.status == 200) {
                     let data = req.data;
@@ -101,6 +133,7 @@ export default class Search extends React.Component {
                             hasSearch: true,
                             songCount: data.result.songCount,
                             songs: newSongs, 
+                            offset: (this.state.offset + 30)
                         });
                         store.dispatch(Actions.setSearchList(newSongs));
                         console.log(store.getState());
@@ -252,6 +285,17 @@ export default class Search extends React.Component {
         });
     }
 
+    listScroll(e) {
+        let scrollTop = e.target.scrollTop+'';
+        let boxHeight = $(e.target).height()+'';
+        let listHeight = $(e.target).find('.list-wrap').height()+'';
+        if(parseFloat(listHeight) - parseFloat(boxHeight) - parseFloat(scrollTop) == -62) {
+            if(!this.state.loading) {
+                this.page();
+            }
+        }
+    }
+
     render() {
         let songs = this.state.songs;
         let curSong = this.state.curSong;
@@ -278,19 +322,25 @@ export default class Search extends React.Component {
                 {
                     this.state.hasSearch?
                     <div className="result-area">
-                    <Tabs>
+                    <Tabs selectedIndex={this.state.type} onSelect={(type) => {console.log(type);this.setState({type: type})}}>
                     <TabList>
                         <Tab>单曲</Tab>
                         <Tab>歌手</Tab>
                         <Tab>专辑</Tab>
                         <Tab>MV</Tab>
-                        <Tab>歌单</Tab>
+                        {
+                            1 === 2?
+                            <div>
+                            <Tab>歌单</Tab>
                         <Tab>主播电台</Tab>
-                        <Tab>用户</Tab>
+                        <Tab>用户</Tab></div>:null
+                        }
+                        
                     </TabList>
                 
                     <TabPanel>
-                        <ul className="songs-item">
+                        <ul className="songs-item" onScroll={this.listScroll.bind(this)}>
+                        <div className="list-wrap">
                         {
                             songs.map((data, k) => {
                                 return (
@@ -365,11 +415,9 @@ export default class Search extends React.Component {
                                 </div>
                             </div>:null
                         }
+                        </div>
                         </ul>
                     </TabPanel>
-                    <TabPanel></TabPanel>
-                    <TabPanel></TabPanel>
-                    <TabPanel></TabPanel>
                     <TabPanel></TabPanel>
                     <TabPanel></TabPanel>
                     <TabPanel></TabPanel>
