@@ -180,7 +180,7 @@ to { transform: rotate(360deg); }
         display: block;
         width: 100%;
         height: calc(100% - 62px);
-        background: rgba(0,0,0,.13);
+        background: rgba(255,255,255,0.75);
     }
     .main-wrap{
         width: 100%;
@@ -713,7 +713,7 @@ to { transform: rotate(360deg); }
 }
 
 .search-page{
-    background: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.7);
     width: 100%;
     height: 100%;
     position: relative;
@@ -928,7 +928,7 @@ to { transform: rotate(360deg); }
                 }
             }
             .select{
-                background: rgba(243, 246, 245, 0.8);
+                background: rgba(252, 62, 45, 0.05);
                 .coum-2{
                     width: 90px;
                     display: flex;

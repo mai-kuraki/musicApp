@@ -1,5 +1,5 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
-const electronVibrancy = require('./electron-vibrancy-mac');
+const electronVibrancy = require('./electron-vibrancy');
 const path = require('path');
 const url = require('url');
 const { default: installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
