@@ -198,7 +198,7 @@ input[placeholder] {
   display: block;
   width: 100%;
   height: calc(100% - 62px);
-  background: rgba(0, 0, 0, 0.13);
+  background: rgba(255, 255, 255, 0.75);
 }
 
 #main .main-wrap {
@@ -795,7 +795,7 @@ input[placeholder] {
 }
 
 .search-page {
-  background: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.7);
   width: 100%;
   height: 100%;
   position: relative;
@@ -863,12 +863,12 @@ input[placeholder] {
   margin-top: 14px;
 }
 
-.search-page .result-area .react-tabs {
+.search-page .result-area .tabs {
   width: 100%;
   height: 100%;
 }
 
-.search-page .result-area .react-tabs .react-tabs__tab-list {
+.search-page .result-area .tabs .tab-btns {
   width: 100%;
   height: 46px;
   overflow: hidden;
@@ -876,7 +876,8 @@ input[placeholder] {
   cursor: default;
 }
 
-.search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab {
+.search-page .result-area .tabs .tab-btns .btn {
+  display: block;
   float: left;
   height: 45px;
   line-height: 48px;
@@ -885,13 +886,13 @@ input[placeholder] {
   outline: none;
 }
 
-.search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab--selected {
+.search-page .result-area .tabs .tab-btns .btn-selected .btn {
   color: #F95949;
   position: relative;
   outline: none;
 }
 
-.search-page .result-area .react-tabs .react-tabs__tab-list .react-tabs__tab--selected::before {
+.search-page .result-area .tabs .tab-btns .btn-selected .btn::before {
   content: '';
   display: block;
   width: 100%;
@@ -902,7 +903,7 @@ input[placeholder] {
   bottom: 0px;
 }
 
-.search-page .result-area .react-tabs__tab-panel {
+.search-page .result-area .result-panel {
   height: calc(100% - 46px - 16px);
   margin-top: 16px;
 }
@@ -1048,7 +1049,7 @@ input[placeholder] {
 }
 
 .search-page .result-area .songs-item .select {
-  background: rgba(243, 246, 245, 0.8);
+  background: rgba(252, 62, 45, 0.05);
 }
 
 .search-page .result-area .songs-item .select .coum-2 {

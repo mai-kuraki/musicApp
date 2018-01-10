@@ -771,16 +771,17 @@ to { transform: rotate(360deg); }
         width: 100%;
         height: calc(100% - 45px);
         margin-top: 14px;
-        .react-tabs{
+        .tabs{
             width: 100%;
             height: 100%;
-            .react-tabs__tab-list{
+            .tab-btns{
                 width: 100%;
                 height: 46px;
                 overflow: hidden;
                 outline: none;
                 cursor: default;
-                .react-tabs__tab{
+                .btn{
+                    display: block;
                     float: left;
                     height: 45px;
                     line-height: 48px;
@@ -788,24 +789,26 @@ to { transform: rotate(360deg); }
                     font-size: 16px;
                     outline: none;
                 }
-                .react-tabs__tab--selected{
-                    color: #F95949;
-                    position: relative;
-                    outline: none;
-                    &::before{
-                        content: '';
-                        display: block;
-                        width: 100%;
-                        height: 2px;
-                        background: #F95949;
-                        position: absolute;
-                        left: 0px;
-                        bottom: 0px;
+                .btn-selected{
+                    .btn{
+                        color: #F95949;
+                        position: relative;
+                        outline: none;
+                        &::before{
+                            content: '';
+                            display: block;
+                            width: 100%;
+                            height: 2px;
+                            background: #F95949;
+                            position: absolute;
+                            left: 0px;
+                            bottom: 0px;
+                        }
                     }
                 }
             }
         }
-        .react-tabs__tab-panel {
+        .result-panel {
             height: calc(100% - 46px - 16px);
             margin-top: 16px;
         }

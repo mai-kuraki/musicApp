@@ -18,6 +18,10 @@ export default class App extends React.Component {
         {
           path: '/',
           component: Search,
+        },
+        {
+          path: '/search',
+          component: Search,
         }
       ]
     }
@@ -80,6 +84,7 @@ export default class App extends React.Component {
                   )
                 })
               }
+              <Redirect from="/" to="/search"/>
             </Switch>
             </div>
             <BottomControl ref="BottomControl" />

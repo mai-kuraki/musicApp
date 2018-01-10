@@ -32696,6 +32696,9 @@ var App = function (_React$Component) {
       routers: [{
         path: '/',
         component: _search2.default
+      }, {
+        path: '/search',
+        component: _search2.default
       }]
     };
     _this.CurrentWindow = _electron.remote.getCurrentWindow();
@@ -32781,7 +32784,8 @@ var App = function (_React$Component) {
                   null,
                   routers.map(function (data, k) {
                     return _react2.default.createElement(_reactRouterDom.Route, { key: k, path: data.path, component: data.component });
-                  })
+                  }),
+                  _react2.default.createElement(_reactRouterDom.Redirect, { from: '/', to: '/search' })
                 )
               ),
               _react2.default.createElement(_bottomControl2.default, { ref: 'BottomControl' })
@@ -39342,6 +39346,8 @@ var _reactDom = __webpack_require__(53);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _reactRouterDom = __webpack_require__(437);
+
 var _axios = __webpack_require__(182);
 
 var _axios2 = _interopRequireDefault(_axios);
@@ -39354,7 +39360,21 @@ var _store = __webpack_require__(172);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _reactTabs = __webpack_require__(503);
+var _song = __webpack_require__(510);
+
+var _song2 = _interopRequireDefault(_song);
+
+var _artist = __webpack_require__(511);
+
+var _artist2 = _interopRequireDefault(_artist);
+
+var _album = __webpack_require__(512);
+
+var _album2 = _interopRequireDefault(_album);
+
+var _mv = __webpack_require__(513);
+
+var _mv2 = _interopRequireDefault(_mv);
 
 var _loading = __webpack_require__(509);
 
@@ -39551,17 +39571,19 @@ var Search = function (_React$Component) {
                                     data = req.data;
 
                                     if (data.code == 200) {
-                                        songs = _this4.state.songs;
-                                        newSongs = songs.concat(data.result.songs || []);
+                                        if (type == 1) {
+                                            songs = _this4.state.songs;
+                                            newSongs = songs.concat(data.result.songs || []);
 
-                                        _this4.setState({
-                                            hasSearch: true,
-                                            songCount: data.result.songCount,
-                                            songs: newSongs,
-                                            offset: _this4.state.offset + 30
-                                        });
-                                        _store2.default.dispatch(Actions.setSearchList(newSongs));
-                                        console.log(_store2.default.getState());
+                                            _this4.setState({
+                                                hasSearch: true,
+                                                songCount: data.result.songCount,
+                                                songs: newSongs,
+                                                offset: _this4.state.offset + 30
+                                            });
+                                            _store2.default.dispatch(Actions.setSearchList(newSongs));
+                                            console.log(_store2.default.getState());
+                                        }
                                     }
                                 }
                                 _context2.next = 11;
@@ -39768,14 +39790,26 @@ var Search = function (_React$Component) {
             }
         }
     }, {
+        key: 'handleTabChange',
+        value: function handleTabChange(type) {
+            var _this8 = this;
+
+            this.setState({ type: type });
+            setTimeout(function () {
+                _this8.search();
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
-            var _this8 = this;
+            var _this9 = this;
 
             var songs = this.state.songs;
             var curSong = this.state.curSong;
             var curPlaySong = _store2.default.getState().main.curPlaySong;
             var playState = _store2.default.getState().main.playState;
+
+            var artists = this.state.artists;
             return _react2.default.createElement(
                 'div',
                 { className: 'search-page' },
@@ -39802,182 +39836,91 @@ var Search = function (_React$Component) {
                         'div',
                         { className: 'result-area' },
                         _react2.default.createElement(
-                            _reactTabs.Tabs,
-                            { selectedIndex: this.state.type, onSelect: function onSelect(type) {
-                                    console.log(type);_this8.setState({ type: type });
-                                } },
+                            'div',
+                            { className: 'tabs' },
                             _react2.default.createElement(
-                                _reactTabs.TabList,
-                                null,
+                                'div',
+                                { className: 'tab-btns' },
                                 _react2.default.createElement(
-                                    _reactTabs.Tab,
-                                    null,
-                                    '\u5355\u66F2'
-                                ),
-                                _react2.default.createElement(
-                                    _reactTabs.Tab,
-                                    null,
-                                    '\u6B4C\u624B'
-                                ),
-                                _react2.default.createElement(
-                                    _reactTabs.Tab,
-                                    null,
-                                    '\u4E13\u8F91'
-                                ),
-                                _react2.default.createElement(
-                                    _reactTabs.Tab,
-                                    null,
-                                    'MV'
-                                ),
-                                 false ? _react2.default.createElement(
-                                    'div',
-                                    null,
+                                    _reactRouterDom.NavLink,
+                                    { activeClassName: 'btn-selected', to: { pathname: "/search/songs" }, onClick: this.handleTabChange.bind(this, 0) },
                                     _react2.default.createElement(
-                                        _reactTabs.Tab,
-                                        null,
-                                        '\u6B4C\u5355'
-                                    ),
-                                    _react2.default.createElement(
-                                        _reactTabs.Tab,
-                                        null,
-                                        '\u4E3B\u64AD\u7535\u53F0'
-                                    ),
-                                    _react2.default.createElement(
-                                        _reactTabs.Tab,
-                                        null,
-                                        '\u7528\u6237'
+                                        'span',
+                                        { className: 'btn' },
+                                        '\u5355\u66F2'
                                     )
-                                ) : null
-                            ),
-                            _react2.default.createElement(
-                                _reactTabs.TabPanel,
-                                null,
+                                ),
                                 _react2.default.createElement(
-                                    'ul',
-                                    { className: 'songs-item', onScroll: this.listScroll.bind(this) },
+                                    _reactRouterDom.NavLink,
+                                    { activeClassName: 'btn-selected', to: { pathname: "/search/artists" }, onClick: this.handleTabChange.bind(this, 1) },
                                     _react2.default.createElement(
-                                        'div',
-                                        { className: 'list-wrap' },
-                                        songs.map(function (data, k) {
-                                            return _react2.default.createElement(
-                                                'li',
-                                                { className: 'clearfix', key: k, onClick: _this8.songSelect.bind(_this8, data) },
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'coum coum-1' },
-                                                    curPlaySong.id == data.id && playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang' }) : null,
-                                                    curPlaySong.id == data.id && !playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang1' }) : null,
-                                                    _react2.default.createElement(
-                                                        'span',
-                                                        null,
-                                                        data.name
-                                                    ),
-                                                    data.mvid ? _react2.default.createElement('i', { className: 'mv iconfont icon-mv2' }) : null
-                                                ),
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'coum coum-2' },
-                                                    _react2.default.createElement(
-                                                        'div',
-                                                        { className: 'c-w' },
-                                                        _react2.default.createElement('span', { className: 'play iconfont icon-bofang1', onClick: _this8.playSong.bind(_this8, null) }),
-                                                        _react2.default.createElement('span', { className: 'more iconmore iconfont icon-gengduo', onClick: _this8.moreMenu.bind(_this8) }),
-                                                        _react2.default.createElement('span', { className: 'download-flag iconfont icon-gou' })
-                                                    )
-                                                ),
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'coum coum-3' },
-                                                    data.artists[0].name
-                                                ),
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'coum coum-4' },
-                                                    data.album.name
-                                                ),
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'coum coum-5' },
-                                                    _this8.formatSeconds(data.duration / 1000)
-                                                ),
-                                                _react2.default.createElement(
-                                                    'div',
-                                                    { className: 'coum coum-6' },
-                                                     false ? _react2.default.createElement('span', { className: 'sq iconfont icon-ttpodicon' }) : null
-                                                )
-                                            );
-                                        }),
-                                        this.state.moreMenu ? _react2.default.createElement(
-                                            'div',
-                                            { className: 'more-menu' },
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'item' },
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u4E0B\u4E00\u9996\u64AD\u653E'
-                                                )
-                                            ),
-                                            _react2.default.createElement('span', { className: 'line' }),
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'item' },
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u6536\u85CF'
-                                                ),
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u4E0B\u8F7D'
-                                                ),
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u8BC4\u8BBA'
-                                                ),
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u5206\u4EAB'
-                                                )
-                                            ),
-                                            _react2.default.createElement('span', { className: 'line' }),
-                                            _react2.default.createElement(
-                                                'div',
-                                                { className: 'item' },
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u6B4C\u624B\uFF1A',
-                                                    curSong.artists[0].name
-                                                ),
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u4E13\u8F91\uFF1A',
-                                                    curSong.album.name
-                                                ),
-                                                curSong.mvid ? _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u67E5\u770BMV'
-                                                ) : null,
-                                                _react2.default.createElement(
-                                                    'button',
-                                                    null,
-                                                    '\u6253\u5F00\u6587\u4EF6\u6240\u5728\u76EE\u5F55'
-                                                )
-                                            )
-                                        ) : null
+                                        'span',
+                                        { className: 'btn' },
+                                        '\u6B4C\u624B'
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    _reactRouterDom.NavLink,
+                                    { activeClassName: 'btn-selected', to: { pathname: "/search/albums" }, onClick: this.handleTabChange.bind(this, 2) },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'btn' },
+                                        '\u4E13\u8F91'
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    _reactRouterDom.NavLink,
+                                    { activeClassName: 'btn-selected', to: { pathname: "/search/mvs" }, onClick: this.handleTabChange.bind(this, 3) },
+                                    _react2.default.createElement(
+                                        'span',
+                                        { className: 'btn' },
+                                        'MV'
                                     )
                                 )
                             ),
-                            _react2.default.createElement(_reactTabs.TabPanel, null),
-                            _react2.default.createElement(_reactTabs.TabPanel, null),
-                            _react2.default.createElement(_reactTabs.TabPanel, null)
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'result-panel' },
+                                _react2.default.createElement(
+                                    _reactRouterDom.Switch,
+                                    null,
+                                    _react2.default.createElement(_reactRouterDom.Route, { path: '/search/songs', render: function render(props) {
+                                            var prop = {
+                                                search: _this9.search.bind(_this9),
+                                                songSelect: _this9.songSelect.bind(_this9),
+                                                listScroll: _this9.listScroll.bind(_this9),
+                                                playSong: _this9.playSong.bind(_this9),
+                                                moreMenu: _this9.moreMenu.bind(_this9),
+                                                moreMenuState: _this9.state.moreMenu,
+                                                songs: songs,
+                                                curSong: curSong,
+                                                curPlaySong: curPlaySong,
+                                                playState: playState
+                                            };
+                                            props = Object.assign(props, prop);
+                                            return _react2.default.createElement(_song2.default, props);
+                                        } }),
+                                    _react2.default.createElement(_reactRouterDom.Route, { path: '/search/artists', render: function render(props) {
+                                            var prop = {
+                                                artists: artists,
+                                                listScroll: _this9.listScroll.bind(_this9)
+                                            };
+                                            props = Object.assign(props, prop);
+                                            return _react2.default.createElement(_artist2.default, props);
+                                        } }),
+                                    _react2.default.createElement(_reactRouterDom.Route, { path: '/search/albums', render: function render(props) {
+                                            var prop = {};
+                                            props = Object.assign(props, prop);
+                                            return _react2.default.createElement(_album2.default, props);
+                                        } }),
+                                    _react2.default.createElement(_reactRouterDom.Route, { path: '/search/mvs', render: function render(props) {
+                                            var prop = {};
+                                            props = Object.assign(props, prop);
+                                            return _react2.default.createElement(_mv2.default, props);
+                                        } }),
+                                    _react2.default.createElement(_reactRouterDom.Redirect, { exact: true, from: '/search', to: '/search/songs' })
+                                )
+                            )
                         )
                     ) : null
                 )
@@ -51058,6 +51001,516 @@ var Loading = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Loading;
+
+/***/ }),
+/* 510 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(53);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(182);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _jquery = __webpack_require__(502);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _store = __webpack_require__(172);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _reactTabs = __webpack_require__(503);
+
+var _loading = __webpack_require__(509);
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _const = __webpack_require__(60);
+
+var constStr = _interopRequireWildcard(_const);
+
+var _actions = __webpack_require__(173);
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _eventEmitter = __webpack_require__(188);
+
+var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Song = function (_React$Component) {
+    _inherits(Song, _React$Component);
+
+    function Song() {
+        _classCallCheck(this, Song);
+
+        return _possibleConstructorReturn(this, (Song.__proto__ || Object.getPrototypeOf(Song)).call(this));
+    }
+
+    _createClass(Song, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {}
+    }, {
+        key: 'formatSeconds',
+        value: function formatSeconds(value) {
+            var theTime = parseInt(value);
+            var theTime1 = 0;
+            var theTime2 = 0;
+            if (theTime > 60) {
+                theTime1 = parseInt(theTime / 60);
+                theTime = parseInt(theTime % 60);
+                if (theTime1 > 60) {
+                    theTime2 = parseInt(theTime1 / 60);
+                    theTime1 = parseInt(theTime1 % 60);
+                }
+            }
+            var result = void 0;
+            if (parseInt(theTime) > 9) {
+                result = "" + parseInt(theTime) + "";
+            } else {
+                result = "0" + parseInt(theTime) + "";
+            }
+            if (theTime1 > 0) {
+                if (parseInt(theTime1) > 9) {
+                    result = "" + parseInt(theTime1) + ":" + result;
+                } else {
+                    result = "0" + parseInt(theTime1) + ":" + result;
+                }
+            } else {
+                result = "00:" + result;
+            }
+            if (theTime2 > 0) {
+                result = "" + parseInt(theTime2) + ":" + result;
+            }
+            return result;
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var songs = this.props.songs;
+            var curSong = this.props.curSong;
+            var curPlaySong = this.props.curPlaySong;
+            var playState = this.props.playState;
+            return _react2.default.createElement(
+                'ul',
+                { className: 'songs-item', onScroll: function onScroll(e) {
+                        _this2.props.listScroll(e);
+                    } },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'list-wrap' },
+                    songs.map(function (data, k) {
+                        return _react2.default.createElement(
+                            'li',
+                            { className: 'clearfix', key: k, onClick: function onClick(e) {
+                                    _this2.props.songSelect(data, e);
+                                } },
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'coum coum-1' },
+                                curPlaySong.id == data.id && playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang' }) : null,
+                                curPlaySong.id == data.id && !playState ? _react2.default.createElement('em', { className: 'playing iconfont icon-yinliang1' }) : null,
+                                _react2.default.createElement(
+                                    'span',
+                                    null,
+                                    data.name
+                                ),
+                                data.mvid ? _react2.default.createElement('i', { className: 'mv iconfont icon-mv2' }) : null
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'coum coum-2' },
+                                _react2.default.createElement(
+                                    'div',
+                                    { className: 'c-w' },
+                                    _react2.default.createElement('span', { className: 'play iconfont icon-bofang1', onClick: function onClick(e) {
+                                            _this2.props.playSong(null, e);
+                                        } }),
+                                    _react2.default.createElement('span', { className: 'more iconmore iconfont icon-gengduo', onClick: function onClick(e) {
+                                            _this2.props.moreMenu(e);
+                                        } }),
+                                    _react2.default.createElement('span', { className: 'download-flag iconfont icon-gou' })
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'coum coum-3' },
+                                data.artists[0].name
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'coum coum-4' },
+                                data.album.name
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'coum coum-5' },
+                                _this2.formatSeconds(data.duration / 1000)
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { className: 'coum coum-6' },
+                                 false ? _react2.default.createElement('span', { className: 'sq iconfont icon-ttpodicon' }) : null
+                            )
+                        );
+                    }),
+                    this.props.moreMenuState ? _react2.default.createElement(
+                        'div',
+                        { className: 'more-menu' },
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'item' },
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u4E0B\u4E00\u9996\u64AD\u653E'
+                            )
+                        ),
+                        _react2.default.createElement('span', { className: 'line' }),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'item' },
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u6536\u85CF'
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u4E0B\u8F7D'
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u8BC4\u8BBA'
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u5206\u4EAB'
+                            )
+                        ),
+                        _react2.default.createElement('span', { className: 'line' }),
+                        _react2.default.createElement(
+                            'div',
+                            { className: 'item' },
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u6B4C\u624B\uFF1A',
+                                curSong.artists[0].name
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u4E13\u8F91\uFF1A',
+                                curSong.album.name
+                            ),
+                            curSong.mvid ? _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u67E5\u770BMV'
+                            ) : null,
+                            _react2.default.createElement(
+                                'button',
+                                null,
+                                '\u6253\u5F00\u6587\u4EF6\u6240\u5728\u76EE\u5F55'
+                            )
+                        )
+                    ) : null
+                )
+            );
+        }
+    }]);
+
+    return Song;
+}(_react2.default.Component);
+
+exports.default = Song;
+
+/***/ }),
+/* 511 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(53);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(182);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _jquery = __webpack_require__(502);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _store = __webpack_require__(172);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _loading = __webpack_require__(509);
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _const = __webpack_require__(60);
+
+var constStr = _interopRequireWildcard(_const);
+
+var _actions = __webpack_require__(173);
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _eventEmitter = __webpack_require__(188);
+
+var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Artist = function (_React$Component) {
+    _inherits(Artist, _React$Component);
+
+    function Artist() {
+        _classCallCheck(this, Artist);
+
+        return _possibleConstructorReturn(this, (Artist.__proto__ || Object.getPrototypeOf(Artist)).call(this));
+    }
+
+    _createClass(Artist, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            return _react2.default.createElement(
+                'ul',
+                { className: 'songs-item', onScroll: function onScroll(e) {
+                        _this2.props.listScroll(e);
+                    } },
+                _react2.default.createElement('div', { className: 'list-wrap' })
+            );
+        }
+    }]);
+
+    return Artist;
+}(_react2.default.Component);
+
+exports.default = Artist;
+
+/***/ }),
+/* 512 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(53);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(182);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _jquery = __webpack_require__(502);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _store = __webpack_require__(172);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _loading = __webpack_require__(509);
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _const = __webpack_require__(60);
+
+var constStr = _interopRequireWildcard(_const);
+
+var _actions = __webpack_require__(173);
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _eventEmitter = __webpack_require__(188);
+
+var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Album = function (_React$Component) {
+    _inherits(Album, _React$Component);
+
+    function Album() {
+        _classCallCheck(this, Album);
+
+        return _possibleConstructorReturn(this, (Album.__proto__ || Object.getPrototypeOf(Album)).call(this));
+    }
+
+    _createClass(Album, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                '\u8FD9\u91CC\u662F\u4E13\u8F91'
+            );
+        }
+    }]);
+
+    return Album;
+}(_react2.default.Component);
+
+exports.default = Album;
+
+/***/ }),
+/* 513 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(5);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = __webpack_require__(53);
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _axios = __webpack_require__(182);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _jquery = __webpack_require__(502);
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _store = __webpack_require__(172);
+
+var _store2 = _interopRequireDefault(_store);
+
+var _loading = __webpack_require__(509);
+
+var _loading2 = _interopRequireDefault(_loading);
+
+var _const = __webpack_require__(60);
+
+var constStr = _interopRequireWildcard(_const);
+
+var _actions = __webpack_require__(173);
+
+var Actions = _interopRequireWildcard(_actions);
+
+var _eventEmitter = __webpack_require__(188);
+
+var _eventEmitter2 = _interopRequireDefault(_eventEmitter);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var MV = function (_React$Component) {
+    _inherits(MV, _React$Component);
+
+    function MV() {
+        _classCallCheck(this, MV);
+
+        return _possibleConstructorReturn(this, (MV.__proto__ || Object.getPrototypeOf(MV)).call(this));
+    }
+
+    _createClass(MV, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                null,
+                '\u8FD9\u91CC\u662FMV'
+            );
+        }
+    }]);
+
+    return MV;
+}(_react2.default.Component);
+
+exports.default = MV;
 
 /***/ })
 /******/ ]);

@@ -1,9 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {BrowserRouter as Router, Route, Switch, Redirect, NavLink} from 'react-router-dom';
 import axios from 'axios';
 import $ from 'jquery';
 import store from '../store';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Song from './searchCompoment/song';
+import Artist from './searchCompoment/artist';
+import Album from './searchCompoment/album';
+import MV from './searchCompoment/mv';
 import Loading from './loading';
 import * as constStr from '../lib/const';
 import * as Actions from '../actions';
@@ -127,16 +131,18 @@ export default class Search extends React.Component {
                 if(req.status == 200) {
                     let data = req.data;
                     if(data.code == 200) {
-                        let songs = this.state.songs
-                        let newSongs = songs.concat(data.result.songs || [])
-                        this.setState({
-                            hasSearch: true,
-                            songCount: data.result.songCount,
-                            songs: newSongs, 
-                            offset: (this.state.offset + 30)
-                        });
-                        store.dispatch(Actions.setSearchList(newSongs));
-                        console.log(store.getState());
+                        if(type == 1) {
+                            let songs = this.state.songs
+                            let newSongs = songs.concat(data.result.songs || [])
+                            this.setState({
+                                hasSearch: true,
+                                songCount: data.result.songCount,
+                                songs: newSongs, 
+                                offset: (this.state.offset + 30)
+                            });
+                            store.dispatch(Actions.setSearchList(newSongs));
+                            console.log(store.getState());
+                        }
                     }
                 }
             }catch(e) {
@@ -296,11 +302,20 @@ export default class Search extends React.Component {
         }
     }
 
+    handleTabChange(type) {
+        this.setState({type: type});
+        setTimeout(() => {
+            this.search();
+        });
+    }
+
     render() {
         let songs = this.state.songs;
         let curSong = this.state.curSong;
         let curPlaySong = store.getState().main.curPlaySong;
         let playState = store.getState().main.playState;
+
+        let artists = this.state.artists;
         return(
             <div className="search-page">
             <div className="scroll-box">
@@ -322,106 +337,69 @@ export default class Search extends React.Component {
                 {
                     this.state.hasSearch?
                     <div className="result-area">
-                    <Tabs selectedIndex={this.state.type} onSelect={(type) => {console.log(type);this.setState({type: type})}}>
-                    <TabList>
-                        <Tab>单曲</Tab>
-                        <Tab>歌手</Tab>
-                        <Tab>专辑</Tab>
-                        <Tab>MV</Tab>
-                        {
-                            1 === 2?
-                            <div>
-                            <Tab>歌单</Tab>
-                        <Tab>主播电台</Tab>
-                        <Tab>用户</Tab></div>:null
-                        }
-                        
-                    </TabList>
-                
-                    <TabPanel>
-                        <ul className="songs-item" onScroll={this.listScroll.bind(this)}>
-                        <div className="list-wrap">
-                        {
-                            songs.map((data, k) => {
-                                return (
-                                    <li className="clearfix" key={k} onClick={this.songSelect.bind(this, data)}>
-                                        <div className="coum coum-1">
-                                        {
-                                            curPlaySong.id == data.id && playState?
-                                            <em className="playing iconfont icon-yinliang"></em>:null
-                                        } 
-                                        {
-                                            curPlaySong.id == data.id && !playState?
-                                            <em className="playing iconfont icon-yinliang1"></em>:null
-                                        }    
-                                        <span>{data.name}</span>
-                                            {
-                                                data.mvid?<i className="mv iconfont icon-mv2"></i>:null
-                                            }
-                                        </div>
-                                        <div className="coum coum-2">
-                                            <div className="c-w">
-                                            <span className="play iconfont icon-bofang1" onClick={this.playSong.bind(this, null)}></span>
-                                            <span className="more iconmore iconfont icon-gengduo" onClick={this.moreMenu.bind(this)}></span>
-                                            <span className="download-flag iconfont icon-gou"></span>
-                                            </div>
-                                        </div>
-                                        <div className="coum coum-3">
-                                            {
-                                                data.artists[0].name
-                                            }
-                                        </div>
-                                        <div className="coum coum-4">
-                                            {
-                                                data.album.name
-                                            }
-                                        </div>
-                                        <div className="coum coum-5">
-                                            {
-                                                this.formatSeconds(data.duration / 1000)
-                                            }
-                                        </div>
-                                        <div className="coum coum-6">
-                                        {
-                                            1 === 2?<span className="sq iconfont icon-ttpodicon"></span>:null
-                                        }
-                                        </div>
-                                    </li>
-                                )
-                            })
-                        }
-                        {
-                            this.state.moreMenu?
-                            <div className="more-menu">
-                                <div className="item">
-                                <button>下一首播放</button>
-                                </div>
-                                <span className="line"></span>
-                                <div className="item">
-                                <button>收藏</button>
-                                <button>下载</button>
-                                <button>评论</button>
-                                <button>分享</button>
-                                </div>
-                                <span className="line"></span>
-                                <div className="item">
-                                <button>歌手：{curSong.artists[0].name}</button>
-                                <button>专辑：{curSong.album.name}</button>
-                                {
-                                    curSong.mvid?
-                                    <button>查看MV</button>:null
-                                }
-                                <button>打开文件所在目录</button>
-                                </div>
-                            </div>:null
-                        }
+                    <div className="tabs">
+                        <div className="tab-btns">
+                            <NavLink activeClassName="btn-selected" to={{pathname:"/search/songs"}} onClick={this.handleTabChange.bind(this, 0)}><span className="btn">单曲</span></NavLink>
+                            <NavLink activeClassName="btn-selected" to={{pathname:"/search/artists"}} onClick={this.handleTabChange.bind(this, 1)} ><span className="btn">歌手</span></NavLink>
+                            <NavLink activeClassName="btn-selected" to={{pathname:"/search/albums"}} onClick={this.handleTabChange.bind(this, 2)}><span className="btn">专辑</span></NavLink>
+                            <NavLink activeClassName="btn-selected" to={{pathname:"/search/mvs"}} onClick={this.handleTabChange.bind(this, 3)}><span className="btn">MV</span></NavLink>
                         </div>
-                        </ul>
-                    </TabPanel>
-                    <TabPanel></TabPanel>
-                    <TabPanel></TabPanel>
-                    <TabPanel></TabPanel>
-                </Tabs>
+                        <div className="result-panel">
+                        <Switch>
+                            <Route path={'/search/songs'} render={
+                                (props) => {
+                                    let prop = {
+                                        search: this.search.bind(this),
+                                        songSelect: this.songSelect.bind(this),
+                                        listScroll: this.listScroll.bind(this),
+                                        playSong: this.playSong.bind(this),
+                                        moreMenu: this.moreMenu.bind(this),
+                                        moreMenuState: this.state.moreMenu,
+                                        songs: songs,
+                                        curSong: curSong,
+                                        curPlaySong: curPlaySong,
+                                        playState: playState,
+                                    }
+                                    props = Object.assign(props, prop);
+                                    return (
+                                        <Song {...props}/>
+                                    )}
+                            } />
+                            <Route path={'/search/artists'} render={
+                                (props) => {
+                                    let prop = {
+                                        artists: artists,
+                                        listScroll: this.listScroll.bind(this),
+                                    }
+                                    props = Object.assign(props, prop);
+                                    return (
+                                        <Artist {...props}/>
+                                    )}
+                            } />
+                            <Route path={'/search/albums'} render={
+                                (props) => {
+                                    let prop = {
+                                    
+                                    }
+                                    props = Object.assign(props, prop);
+                                    return (
+                                        <Album {...props}/>
+                                    )}
+                            } />
+                            <Route path={'/search/mvs'} render={
+                                (props) => {
+                                    let prop = {
+                                    
+                                    }
+                                    props = Object.assign(props, prop);
+                                    return (
+                                        <MV {...props}/>
+                                    )}
+                            } />
+                            <Redirect exact from="/search" to="/search/songs"/>
+                        </Switch>
+                        </div>
+                        </div>
                 </div>:null
                 }
                 </div>
