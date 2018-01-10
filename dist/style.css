@@ -292,7 +292,7 @@ input[placeholder] {
 }
 
 #main .main-wrap .window-content .left-nav .menu-list .item li:hover {
-  background: rgba(221, 221, 225, 0.4);
+  background: rgba(252, 62, 45, 0.05);
 }
 
 #main .main-wrap .window-content .left-nav .menu-list .item li .icon {
@@ -315,14 +315,18 @@ input[placeholder] {
 }
 
 #main .main-wrap .window-content .left-nav .menu-list .item .active {
-  background: rgba(221, 221, 225, 0.8);
+  background: rgba(252, 62, 45, 0.1);
   position: relative;
+}
+
+#main .main-wrap .window-content .left-nav .menu-list .item .active:hover {
+  background: rgba(252, 62, 45, 0.1);
 }
 
 #main .main-wrap .window-content .left-nav .menu-list .item .active::before {
   content: '';
   display: block;
-  width: 2px;
+  width: 3px;
   height: 100%;
   background: #F85648;
 }
