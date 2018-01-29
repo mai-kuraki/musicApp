@@ -359,6 +359,7 @@ export default class Search extends React.Component {
                                         curSong: curSong,
                                         curPlaySong: curPlaySong,
                                         playState: playState,
+                                        keyword: this.state.keyword,
                                     }
                                     props = Object.assign(props, prop);
                                     return (
@@ -370,6 +371,7 @@ export default class Search extends React.Component {
                                     let prop = {
                                         artists: artists,
                                         listScroll: this.listScroll.bind(this),
+                                        keyword: this.state.keyword,
                                     }
                                     props = Object.assign(props, prop);
                                     return (

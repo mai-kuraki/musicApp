@@ -17,6 +17,17 @@ export default class Song extends React.Component{
     componentDidMount() {
     }
 
+    findKeyword(str, keyword) {
+        let reg = eval(`/${keyword}/ig`);
+        let regRes = reg.exec(str);
+        console.log(regRes, typeof regRes)
+        if(regRes && typeof regRes === 'object') {
+            let s = regRes[0];
+            str = str.replace(reg, `<em class="keyword">${s}</em>`);
+        }
+        return str;
+    }
+
     formatSeconds(value) {
         let theTime = parseInt(value);
         let theTime1 = 0;
@@ -55,6 +66,7 @@ export default class Song extends React.Component{
         let curSong = this.props.curSong;
         let curPlaySong = this.props.curPlaySong;
         let playState = this.props.playState;
+        let keyword = this.props.keyword;
         return (
             <ul className="songs-item" onScroll={(e) => {this.props.listScroll(e)}}>
                 <div className="list-wrap">
@@ -71,7 +83,7 @@ export default class Song extends React.Component{
                                     curPlaySong.id == data.id && !playState?
                                     <em className="playing iconfont icon-yinliang1"></em>:null
                                 }    
-                                <span>{data.name}</span>
+                                <span dangerouslySetInnerHTML={{__html: this.findKeyword(data.name, keyword)}}></span>
                                     {
                                         data.mvid?<i className="mv iconfont icon-mv2"></i>:null
                                     }
@@ -83,16 +95,8 @@ export default class Song extends React.Component{
                                     <span className="download-flag iconfont icon-gou"></span>
                                     </div>
                                 </div>
-                                <div className="coum coum-3">
-                                    {
-                                        data.artists[0].name
-                                    }
-                                </div>
-                                <div className="coum coum-4">
-                                    {
-                                        data.album.name
-                                    }
-                                </div>
+                                <div className="coum coum-3" dangerouslySetInnerHTML={{__html: this.findKeyword(data.artists[0].name || '', keyword)}}></div>
+                                <div className="coum coum-4" dangerouslySetInnerHTML={{__html: this.findKeyword(data.album.name || '', keyword)}}></div>
                                 <div className="coum coum-5">
                                     {
                                         this.formatSeconds(data.duration / 1000)

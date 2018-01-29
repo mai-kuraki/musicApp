@@ -966,6 +966,10 @@ input[placeholder] {
   overflow: hidden;
 }
 
+.search-page .result-area .songs-item li .keyword {
+  color: #F75547;
+}
+
 .search-page .result-area .songs-item li .coum {
   height: 48px;
   line-height: 48px;
@@ -1080,4 +1084,53 @@ input[placeholder] {
   font-size: 16px;
   color: #8DD4F1;
   display: none;
+}
+
+.search-page .result-area .artists-item {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.search-page .result-area .artists-item .list-wrap {
+  height: auto;
+  padding-bottom: 62px;
+}
+
+.search-page .result-area .artists-item li {
+  width: 100%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.search-page .result-area .artists-item li .avator {
+  width: 50px;
+  height: 50px;
+  background: #FFF;
+  cursor: default;
+}
+
+.search-page .result-area .artists-item li .avator img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.search-page .result-area .artists-item li .info {
+  display: flex;
+  align-items: center;
+  margin-left: 12px;
+  cursor: default;
+}
+
+.search-page .result-area .artists-item li .info i {
+  color: #999;
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.search-page .result-area .artists-item li .info .keyword {
+  color: #F75547;
 }
